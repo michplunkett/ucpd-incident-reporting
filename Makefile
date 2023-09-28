@@ -2,6 +2,7 @@ BASEDIR=ucpd_incident_reporting
 
 .PHONY: lint
 lint:
+	poetry export --without-hashes --format=requirements.txt > requirements.txt
 	pre-commit run --all-files
 
 .PHONY: test
