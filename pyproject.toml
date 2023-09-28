@@ -12,6 +12,9 @@ pytest = "^7.3.1"
 responses = "^0.23.1"
 pre-commit = "^3.4.0"
 streamlit = "^1.27.0"
+google-cloud-ndb = "^2.2.2"
+google-cloud-logging = "^3.7.0"
+pytz = "^2023.3.post1"
 
 [build-system]
 requires = ["poetry-core"]
