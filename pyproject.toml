@@ -15,6 +15,7 @@ streamlit = "^1.27.0"
 google-cloud-ndb = "^2.2.2"
 google-cloud-logging = "^3.7.0"
 pytz = "^2023.3.post1"
+cachetools = "^5.3.1"
 
 [build-system]
 requires = ["poetry-core"]
