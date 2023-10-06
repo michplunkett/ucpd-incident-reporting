@@ -1,9 +1,11 @@
 name: Format-and-Fail
 on:
-  push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+  push:
+    branches:
+      - main
 
 jobs:
   pre-commit:
