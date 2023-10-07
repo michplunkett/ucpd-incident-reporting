@@ -1,26 +1,33 @@
 """Contains code relating to the Google Cloud Platform Datastore service."""
 import json
-from datetime import date, datetime
+from datetime import datetime, timedelta
 
-from google.cloud.ndb import Client
+import polars as pl
+from google.cloud.datastore.helpers import GeoPoint
+from google.cloud.ndb import Client, GeoPtProperty, Model, StringProperty
 from google.oauth2 import service_account
 
-from incident_reporting.models.incident import Incident
 from incident_reporting.utils.constants import (
     ENV_GCP_CREDENTIALS,
     ENV_GCP_PROJECT_ID,
     FILE_TYPE_JSON,
-    UCPD_MDY_KEY_DATE_FORMAT,
+    UCPD_MDY_DATE_FORMAT,
 )
 
 
-def get_incident(ucpd_id: str):
-    """Get Incident from datastore."""
-    incident = Incident.get_by_id(ucpd_id)
-    if incident:
-        return incident
-    else:
-        return None
+class Incident(Model):
+    """Standard data structure for recovered UCPD incidents."""
+
+    ucpd_id = StringProperty(indexed=True)
+    incident = StringProperty(indexed=True)
+    reported = StringProperty()
+    reported_date = StringProperty(indexed=True)
+    occurred = StringProperty()
+    comments = StringProperty()
+    disposition = StringProperty()
+    location = StringProperty()
+    validated_address = StringProperty()
+    validated_location = GeoPtProperty()
 
 
 class GoogleNBD:
@@ -40,13 +47,24 @@ class GoogleNBD:
                 project=ENV_GCP_PROJECT_ID,
             )
 
-    def get_latest_date(self) -> date:
-        """Get latest incident date."""
+    def get_incidents_back_x_days(self, days_back: int) -> pl.DataFrame:
         with self.client.context():
-            query = Incident.query().order(-Incident.reported_date).fetch(1)
-            if query:
-                return datetime.strptime(
-                    query[0].reported_date, UCPD_MDY_KEY_DATE_FORMAT
-                ).date()
-            else:
-                return datetime.now().date()
+            date_str = (datetime.today() - timedelta(days=days_back)).strftime(
+                UCPD_MDY_DATE_FORMAT
+            )
+            query = (
+                Incident.query(Incident.reported_date >= date_str)
+                .order(-Incident.reported_date)
+                .fetch()
+            )
+            incident_list = []
+            for i in query:
+                record = {}
+                for key, value in i.to_dict().items():
+                    if isinstance(value, GeoPoint):
+                        record[key] = [value.latitude, value.longitude]
+                        continue
+                    record[key] = value
+                    incident_list.append(record)
+            df = pl.DataFrame(incident_list)
+            return df
