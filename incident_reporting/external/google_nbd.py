@@ -75,14 +75,14 @@ class GoogleNBD:
             return self._process_incidents(query)
 
     @st.cache_data(ttl=timedelta(days=1))
-    def get_last_90_days_of_incidents(self):
+    def get_last_90_days_of_incidents(self) -> pl.DataFrame:
         return self._get_incidents_back_x_days(90)
 
     @st.cache_data(ttl=timedelta(days=1))
-    def get_last_year_days_of_incidents(self):
+    def get_last_year_days_of_incidents(self) -> pl.DataFrame:
         return self._get_incidents_back_x_days(365)
 
     @st.cache_data(ttl=timedelta(days=1))
-    def get_all_incidents(self):
+    def get_all_incidents(self) -> pl.DataFrame:
         query = Incident.query().order(-Incident.reported).fetch()
         return self._process_incidents(query)
