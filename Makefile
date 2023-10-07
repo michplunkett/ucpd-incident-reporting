@@ -5,4 +5,4 @@ lint:
 
 .PHONY: run
 run:
-	python -m incident_reporting
+	streamlit run app.py
