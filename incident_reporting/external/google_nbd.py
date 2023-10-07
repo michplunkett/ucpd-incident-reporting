@@ -3,6 +3,7 @@ import json
 from datetime import datetime, timedelta
 
 import polars as pl
+import streamlit as st
 from google.cloud.datastore.helpers import GeoPoint
 from google.cloud.ndb import Client, GeoPtProperty, Model, StringProperty
 from google.oauth2 import service_account
@@ -47,7 +48,21 @@ class GoogleNBD:
                 project=ENV_GCP_PROJECT_ID,
             )
 
-    def get_incidents_back_x_days(self, days_back: int) -> pl.DataFrame:
+    @staticmethod
+    def _process_incidents(incidents: [Incident]) -> pl.DataFrame:
+        incident_list = []
+        for i in incidents:
+            record = {}
+            for key, value in i.to_dict().items():
+                if isinstance(value, GeoPoint):
+                    record[key] = [value.latitude, value.longitude]
+                    continue
+                record[key] = value
+                incident_list.append(record)
+        df = pl.DataFrame(incident_list)
+        return df
+
+    def _get_incidents_back_x_days(self, days_back: int) -> pl.DataFrame:
         with self.client.context():
             date_str = (datetime.today() - timedelta(days=days_back)).strftime(
                 UCPD_MDY_DATE_FORMAT
@@ -57,14 +72,17 @@ class GoogleNBD:
                 .order(-Incident.reported_date)
                 .fetch()
             )
-            incident_list = []
-            for i in query:
-                record = {}
-                for key, value in i.to_dict().items():
-                    if isinstance(value, GeoPoint):
-                        record[key] = [value.latitude, value.longitude]
-                        continue
-                    record[key] = value
-                    incident_list.append(record)
-            df = pl.DataFrame(incident_list)
-            return df
+            return self._process_incidents(query)
+
+    @st.cache_data(ttl=timedelta(days=1))
+    def get_last_90_days_of_incidents(self):
+        return self._get_incidents_back_x_days(90)
+
+    @st.cache_data(ttl=timedelta(days=1))
+    def get_last_year_days_of_incidents(self):
+        return self._get_incidents_back_x_days(365)
+
+    @st.cache_data(ttl=timedelta(days=1))
+    def get_all_incidents(self):
+        query = Incident.query().order(-Incident.reported).fetch()
+        return self._process_incidents(query)
