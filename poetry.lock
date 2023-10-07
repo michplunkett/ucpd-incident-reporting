@@ -1040,6 +1040,42 @@ dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
+name = "polars"
+version = "0.19.7"
+description = "Blazingly fast DataFrame library"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "polars-0.19.7-cp38-abi3-macosx_10_12_x86_64.whl", hash = "sha256:c0f0c40abbd6eb5f8356812cfdc40f6c0a4243f61c838bea12ba97a03805c09f"},
+    {file = "polars-0.19.7-cp38-abi3-macosx_11_0_arm64.whl", hash = "sha256:0b03ff38ff673d0f802e6756873f1b26e21917f6043876e845212e0a50d26a33"},
+    {file = "polars-0.19.7-cp38-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:c99eba34260e83fa3f7105348e4c442b0c3196510be9c7c7fc6ddc0af7b580f7"},
+    {file = "polars-0.19.7-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b49f6d5dad6fa2ddbe8994481edfb42fec396d59f8a72c2ddfeb6839e21166e6"},
+    {file = "polars-0.19.7-cp38-abi3-win_amd64.whl", hash = "sha256:cf6349c168324362208653fb379b77ac10d565febf45c28c60f4240ecbbece03"},
+    {file = "polars-0.19.7.tar.gz", hash = "sha256:623a348b4a6d118923f3efb906936137744667f32b766891aa67d144912d9f5a"},
+]
+
+[package.extras]
+adbc = ["adbc_driver_sqlite"]
+all = ["polars[adbc,cloudpickle,connectorx,deltalake,fsspec,gevent,matplotlib,numpy,pandas,pyarrow,pydantic,pyiceberg,sqlalchemy,timezone,xlsx2csv,xlsxwriter]"]
+cloudpickle = ["cloudpickle"]
+connectorx = ["connectorx"]
+deltalake = ["deltalake (>=0.10.0)"]
+fsspec = ["fsspec"]
+gevent = ["gevent"]
+matplotlib = ["matplotlib"]
+numpy = ["numpy (>=1.16.0)"]
+openpyxl = ["openpyxl (>=3.0.0)"]
+pandas = ["pandas", "pyarrow (>=7.0.0)"]
+pyarrow = ["pyarrow (>=7.0.0)"]
+pydantic = ["pydantic"]
+pyiceberg = ["pyiceberg (>=0.5.0)"]
+pyxlsb = ["pyxlsb (>=1.0)"]
+sqlalchemy = ["pandas", "sqlalchemy"]
+timezone = ["backports.zoneinfo", "tzdata"]
+xlsx2csv = ["xlsx2csv (>=0.8.0)"]
+xlsxwriter = ["xlsxwriter"]
+
+[[package]]
 name = "pre-commit"
 version = "3.4.0"
 description = "A framework for managing and maintaining multi-language pre-commit hooks."
@@ -1823,4 +1859,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "ba9efd4b59a1366a4a019a61a45ac6767d20c9a48842ebb997cc725889bdf8ad"
+content-hash = "0fd118b0959750de46415e3ec53488b4920d0d3a36928950c9023b4d716f354a"
