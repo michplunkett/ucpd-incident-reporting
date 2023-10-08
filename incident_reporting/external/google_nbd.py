@@ -78,10 +78,10 @@ class GoogleNBD:
                 for p in element.split("/"):
                     fmt_element = p.strip()
                     if p:
-                        parsed_set.add(fmt_element.title())
+                        parsed_set.add(fmt_element.replace("\n", " "))
             else:
                 fmt_element = element.strip()
-                parsed_set.add(fmt_element.title())
+                parsed_set.add(fmt_element.replace("\n", " "))
         return list(parsed_set)
 
     @staticmethod
