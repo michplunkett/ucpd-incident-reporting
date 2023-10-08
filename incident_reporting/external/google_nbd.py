@@ -17,6 +17,8 @@ from incident_reporting.utils.constants import (
 )
 
 
+# Incidents of these types have been excluded from the list for the sake of
+# victim's privacy and due to the nature the incidents included in this list.
 EXCLUDED_INCIDENT_TYPES = [
     "Fondling",
     "Medical Call",
