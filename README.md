@@ -16,6 +16,5 @@ This application makes use of scraped incidents from the UCPD Daily Incident Rep
   - Example: `poetry add black`
 
 ## Standard Commands
-- `make lint`: Runs `pre-commit`
-- `make test`: Runs test cases in the `test` directory
-- `make run`: Runs the `main` function in the `project` folder
+- `make lint`: Runs `pre-commit` and creates the `requirements.txt` file
+- `make run`: Starts the `streamlit` application

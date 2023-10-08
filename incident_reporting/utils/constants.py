@@ -12,3 +12,6 @@ ENV_GCP_PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
 
 # File Type Constants
 FILE_TYPE_JSON = "json"
+
+# Incident Constants
+INCIDENT_KEY_TYPE = "incident"
