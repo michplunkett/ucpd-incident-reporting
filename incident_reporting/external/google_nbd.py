@@ -12,8 +12,28 @@ from incident_reporting.utils.constants import (
     ENV_GCP_CREDENTIALS,
     ENV_GCP_PROJECT_ID,
     FILE_TYPE_JSON,
+    INCIDENT_KEY_TYPE,
     UCPD_MDY_DATE_FORMAT,
 )
+
+
+EXCLUDED_INCIDENT_TYPES = [
+    "Fondling",
+    "Medical Call",
+    "Luring a Minor",
+    "Lost Property",
+    "Stalking",
+    "Sexual Assault",
+    "Dating",
+    "Stalking",
+    "Domestic",
+    "Sex",
+    "Found Property",
+    "Mental Health",
+    "Harassment by Electronic Means",
+    "Well-Being",
+    "Threatening Phone Call",
+]
 
 
 class Incident(Model):
@@ -49,6 +69,20 @@ class GoogleNBD:
             )
 
     @staticmethod
+    def _list_to_parsed_list(unparsed_list: [str]) -> [str]:
+        parsed_set = set()
+        for element in unparsed_list:
+            if "/" in element:
+                for p in element.split("/"):
+                    fmt_element = p.strip()
+                    if p:
+                        parsed_set.add(fmt_element.title())
+            else:
+                fmt_element = element.strip()
+                parsed_set.add(fmt_element.title())
+        return list(parsed_set)
+
+    @staticmethod
     def _process_incidents(incidents: [Incident]) -> pl.DataFrame:
         incident_list = []
         for i in incidents:
@@ -60,6 +94,11 @@ class GoogleNBD:
                 record[key] = value
                 incident_list.append(record)
         df = pl.DataFrame(incident_list)
+        df = df.filter(
+            ~pl.col(INCIDENT_KEY_TYPE).str.contains(
+                "|".join(EXCLUDED_INCIDENT_TYPES)
+            )
+        )
         return df
 
     def _get_incidents_back_x_days(self, days_back: int) -> pl.DataFrame:
@@ -75,14 +114,17 @@ class GoogleNBD:
             return self._process_incidents(query)
 
     @st.cache_data(ttl=timedelta(days=1))
-    def get_last_90_days_of_incidents(self) -> pl.DataFrame:
-        return self._get_incidents_back_x_days(90)
+    def get_last_90_days_of_incidents(self) -> (pl.DataFrame, [str]):
+        df = self._get_incidents_back_x_days(90)
+        return df, self._list_to_parsed_list(df[INCIDENT_KEY_TYPE].to_list())
 
     @st.cache_data(ttl=timedelta(days=1))
-    def get_last_year_days_of_incidents(self) -> pl.DataFrame:
-        return self._get_incidents_back_x_days(365)
+    def get_last_year_days_of_incidents(self) -> (pl.DataFrame, [str]):
+        df = self._get_incidents_back_x_days(365)
+        return df, self._list_to_parsed_list(df[INCIDENT_KEY_TYPE].to_list())
 
     @st.cache_data(ttl=timedelta(days=1))
-    def get_all_incidents(self) -> pl.DataFrame:
+    def get_all_incidents(self) -> (pl.DataFrame, [str]):
         query = Incident.query().order(-Incident.reported).fetch()
-        return self._process_incidents(query)
+        df = self._process_incidents(query)
+        return df, self._list_to_parsed_list(df[INCIDENT_KEY_TYPE].to_list())
