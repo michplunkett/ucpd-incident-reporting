@@ -34,6 +34,13 @@ EXCLUDED_INCIDENT_TYPES = [
     "Harassment by Electronic Means",
     "Well-Being",
     "Threatening Phone Call",
+    "Medical Transport",
+    "Warrant",
+    "Lost Wallet",
+    "Fire Alarm",
+    "Chemical Spill",
+    "Suspicious Mail",
+    "Eavesdropping",
 ]
 
 
