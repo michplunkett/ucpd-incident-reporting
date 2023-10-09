@@ -2,7 +2,7 @@
 import gzip
 import json
 import os
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 import polars as pl
 from google.cloud.datastore.helpers import GeoPoint
@@ -14,9 +14,13 @@ from incident_reporting.utils.constants import (
     ENV_GCP_PROJECT_ID,
     FILE_OPEN_MODE_READ,
     FILE_TYPE_JSON,
+    INCIDENT_KEY_REPORTED,
     INCIDENT_KEY_REPORTED_DATE,
     INCIDENT_KEY_TYPE,
-    UCPD_MDY_DATE_FORMAT,
+    INCIDENT_KEY_VALIDATED_LOCATION,
+    TIMEZONE_CHICAGO,
+    UCPD_MDY_KEY_DATE_FORMAT,
+    UTC_DATE_TIME_FORMAT,
 )
 
 
@@ -101,7 +105,7 @@ class GoogleNBD:
             record = {}
             for key, value in i.to_dict().items():
                 if isinstance(value, GeoPoint):
-                    record[key] = [value.latitude, value.longitude]
+                    record[key] = f"{value.latitude},{value.longitude}"
                     continue
                 record[key] = value
                 incident_list.append(record)
@@ -111,7 +115,18 @@ class GoogleNBD:
                 "|".join(EXCLUDED_INCIDENT_TYPES)
             )
         )
-        return df
+
+        return df.with_columns(
+            pl.col(INCIDENT_KEY_REPORTED)
+            .str.strptime(pl.Datetime, format=UTC_DATE_TIME_FORMAT)
+            .dt.convert_time_zone(TIMEZONE_CHICAGO),
+            pl.col(INCIDENT_KEY_REPORTED_DATE).str.strptime(
+                pl.Date, format=UCPD_MDY_KEY_DATE_FORMAT
+            ),
+            pl.col(INCIDENT_KEY_VALIDATED_LOCATION)
+            .str.split(",")
+            .cast(pl.List(pl.Float64)),
+        )
 
     @staticmethod
     def _get_stored_incidents():
@@ -121,42 +136,56 @@ class GoogleNBD:
         )
 
         with gzip.open(file_path, FILE_OPEN_MODE_READ) as f:
-            df = pl.read_csv(f)
+            df = pl.read_csv(f.read())
 
         return df
 
-    def _get_incidents_back_x_days(self, date_str: str = "") -> pl.DataFrame:
-        if not date_str:
-            date_str = "2000-01-01"
-        stored_df = self._get_stored_incidents().filter(
-            ~pl.col(INCIDENT_KEY_REPORTED_DATE) >= date_str
+    def _get_incidents_back_x_days(
+        self, date_limit: date = None
+    ) -> pl.DataFrame:
+        if not date_limit:
+            date_limit = date(2000, 1, 1)
+        stored_df = self._get_stored_incidents().with_columns(
+            pl.col(INCIDENT_KEY_REPORTED)
+            .str.strptime(pl.Datetime, format=UTC_DATE_TIME_FORMAT)
+            .dt.convert_time_zone(TIMEZONE_CHICAGO),
+            pl.col(INCIDENT_KEY_REPORTED_DATE).str.strptime(
+                pl.Date, format=UCPD_MDY_KEY_DATE_FORMAT
+            ),
+            pl.col(INCIDENT_KEY_VALIDATED_LOCATION)
+            .str.split(",")
+            .cast(pl.List(pl.Float64)),
+        )
+
+        stored_df = stored_df.filter(
+            pl.col(INCIDENT_KEY_REPORTED_DATE) >= date_limit
         )
 
         with self.client.context():
             query = (
                 Incident.query(
                     Incident.reported_date
-                    >= stored_df[INCIDENT_KEY_REPORTED_DATE].max()
+                    >= stored_df[INCIDENT_KEY_REPORTED_DATE]
+                    .max()
+                    .strftime(UCPD_MDY_KEY_DATE_FORMAT)
                 )
                 .order(-Incident.reported_date)
                 .fetch()
             )
             df = self._process_incidents(query)
 
-        return pl.concat([stored_df, df], rechunk=True)
+        return pl.concat([stored_df, df]).sort(
+            [INCIDENT_KEY_REPORTED_DATE, INCIDENT_KEY_REPORTED], descending=True
+        )
 
     def get_last_90_days_of_incidents(self) -> (pl.DataFrame, [str]):
-        date_str = (datetime.today() - timedelta(days=90)).strftime(
-            UCPD_MDY_DATE_FORMAT
-        )
-        df = self._get_incidents_back_x_days(date_str)
+        date_limit = (datetime.today() - timedelta(days=90)).date()
+        df = self._get_incidents_back_x_days(date_limit)
         return df, self._list_to_parsed_list(df[INCIDENT_KEY_TYPE].to_list())
 
     def get_last_year_days_of_incidents(self) -> (pl.DataFrame, [str]):
-        date_str = (datetime.today() - timedelta(days=365)).strftime(
-            UCPD_MDY_DATE_FORMAT
-        )
-        df = self._get_incidents_back_x_days(date_str)
+        date_limit = (datetime.today() - timedelta(days=365)).date()
+        df = self._get_incidents_back_x_days(date_limit)
         return df, self._list_to_parsed_list(df[INCIDENT_KEY_TYPE].to_list())
 
     def get_all_incidents(self) -> (pl.DataFrame, [str]):
