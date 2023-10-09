@@ -99,6 +99,20 @@ class GoogleNBD:
         return list(parsed_set)
 
     @staticmethod
+    def _standardize_df(df: pl.DataFrame) -> pl.DataFrame:
+        return df.with_columns(
+            pl.col(INCIDENT_KEY_REPORTED)
+            .str.strptime(pl.Datetime, format=UTC_DATE_TIME_FORMAT)
+            .dt.convert_time_zone(TIMEZONE_CHICAGO),
+            pl.col(INCIDENT_KEY_REPORTED_DATE).str.strptime(
+                pl.Date, format=UCPD_MDY_KEY_DATE_FORMAT
+            ),
+            pl.col(INCIDENT_KEY_VALIDATED_LOCATION)
+            .str.split(",")
+            .cast(pl.List(pl.Float64)),
+        )
+
+    @staticmethod
     def _process_incidents(incidents: [Incident]) -> pl.DataFrame:
         incident_list = []
         for i in incidents:
@@ -116,17 +130,7 @@ class GoogleNBD:
             )
         )
 
-        return df.with_columns(
-            pl.col(INCIDENT_KEY_REPORTED)
-            .str.strptime(pl.Datetime, format=UTC_DATE_TIME_FORMAT)
-            .dt.convert_time_zone(TIMEZONE_CHICAGO),
-            pl.col(INCIDENT_KEY_REPORTED_DATE).str.strptime(
-                pl.Date, format=UCPD_MDY_KEY_DATE_FORMAT
-            ),
-            pl.col(INCIDENT_KEY_VALIDATED_LOCATION)
-            .str.split(",")
-            .cast(pl.List(pl.Float64)),
-        )
+        return GoogleNBD._standardize_df(df)
 
     @staticmethod
     def _get_stored_incidents():
@@ -145,21 +149,9 @@ class GoogleNBD:
     ) -> pl.DataFrame:
         if not date_limit:
             date_limit = date(2000, 1, 1)
-        stored_df = self._get_stored_incidents().with_columns(
-            pl.col(INCIDENT_KEY_REPORTED)
-            .str.strptime(pl.Datetime, format=UTC_DATE_TIME_FORMAT)
-            .dt.convert_time_zone(TIMEZONE_CHICAGO),
-            pl.col(INCIDENT_KEY_REPORTED_DATE).str.strptime(
-                pl.Date, format=UCPD_MDY_KEY_DATE_FORMAT
-            ),
-            pl.col(INCIDENT_KEY_VALIDATED_LOCATION)
-            .str.split(",")
-            .cast(pl.List(pl.Float64)),
-        )
-
-        stored_df = stored_df.filter(
-            pl.col(INCIDENT_KEY_REPORTED_DATE) >= date_limit
-        )
+        stored_df = GoogleNBD._standardize_df(
+            self._get_stored_incidents()
+        ).filter(pl.col(INCIDENT_KEY_REPORTED_DATE) >= date_limit)
 
         with self.client.context():
             query = (
