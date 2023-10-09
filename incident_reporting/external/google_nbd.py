@@ -179,13 +179,15 @@ class GoogleNBD:
         )
 
     def get_last_90_days_of_incidents(self) -> (pl.DataFrame, [str]):
-        date_limit = (datetime.today() - timedelta(days=90)).date()
-        df = self._get_incidents_back_x_days(date_limit)
+        df = self._get_incidents_back_x_days(
+            (datetime.today() - timedelta(days=90)).date()
+        )
         return df, self._list_to_parsed_list(df[INCIDENT_KEY_TYPE].to_list())
 
     def get_last_year_days_of_incidents(self) -> (pl.DataFrame, [str]):
-        date_limit = (datetime.today() - timedelta(days=365)).date()
-        df = self._get_incidents_back_x_days(date_limit)
+        df = self._get_incidents_back_x_days(
+            (datetime.today() - timedelta(days=365)).date()
+        )
         return df, self._list_to_parsed_list(df[INCIDENT_KEY_TYPE].to_list())
 
     def get_all_incidents(self) -> (pl.DataFrame, [str]):
