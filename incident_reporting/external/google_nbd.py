@@ -1,5 +1,7 @@
 """Contains code relating to the Google Cloud Platform Datastore service."""
+import gzip
 import json
+import os
 from datetime import datetime, timedelta
 
 import polars as pl
@@ -10,6 +12,7 @@ from google.oauth2 import service_account
 from incident_reporting.utils.constants import (
     ENV_GCP_CREDENTIALS,
     ENV_GCP_PROJECT_ID,
+    FILE_OPEN_MODE_READ,
     FILE_TYPE_JSON,
     INCIDENT_KEY_TYPE,
     UCPD_MDY_DATE_FORMAT,
@@ -107,6 +110,18 @@ class GoogleNBD:
                 "|".join(EXCLUDED_INCIDENT_TYPES)
             )
         )
+        return df
+
+    @staticmethod
+    def _get_stored_incidents():
+        file_path = (
+            os.getcwd().replace("\\", "/")
+            + "/incident_reporting/data/incident_dump.csv.gz"
+        )
+
+        with gzip.open(file_path, FILE_OPEN_MODE_READ) as f:
+            df = pl.read_csv(f)
+
         return df
 
     def _get_incidents_back_x_days(self, days_back: int) -> pl.DataFrame:
