@@ -176,7 +176,7 @@ class GoogleNBD:
         )
         return df, self._list_to_parsed_list(df[INCIDENT_KEY_TYPE].to_list())
 
-    def get_last_year_days_of_incidents(self) -> (pl.DataFrame, [str]):
+    def get_last_year_of_incidents(self) -> (pl.DataFrame, [str]):
         df = self._get_incidents_back_x_days(
             (datetime.today() - timedelta(days=365)).date()
         )
