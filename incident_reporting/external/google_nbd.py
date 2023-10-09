@@ -14,6 +14,7 @@ from incident_reporting.utils.constants import (
     ENV_GCP_PROJECT_ID,
     FILE_OPEN_MODE_READ,
     FILE_TYPE_JSON,
+    INCIDENT_KEY_REPORTED_DATE,
     INCIDENT_KEY_TYPE,
     UCPD_MDY_DATE_FORMAT,
 )
@@ -124,27 +125,40 @@ class GoogleNBD:
 
         return df
 
-    def _get_incidents_back_x_days(self, days_back: int) -> pl.DataFrame:
+    def _get_incidents_back_x_days(self, date_str: str = "") -> pl.DataFrame:
+        if not date_str:
+            date_str = "2000-01-01"
+        stored_df = self._get_stored_incidents().filter(
+            ~pl.col(INCIDENT_KEY_REPORTED_DATE) >= date_str
+        )
+
         with self.client.context():
-            date_str = (datetime.today() - timedelta(days=days_back)).strftime(
-                UCPD_MDY_DATE_FORMAT
-            )
             query = (
-                Incident.query(Incident.reported_date >= date_str)
+                Incident.query(
+                    Incident.reported_date
+                    >= stored_df[INCIDENT_KEY_REPORTED_DATE].max()
+                )
                 .order(-Incident.reported_date)
                 .fetch()
             )
-            return self._process_incidents(query)
+            df = self._process_incidents(query)
+
+        return pl.concat([stored_df, df], rechunk=True)
 
     def get_last_90_days_of_incidents(self) -> (pl.DataFrame, [str]):
-        df = self._get_incidents_back_x_days(90)
+        date_str = (datetime.today() - timedelta(days=90)).strftime(
+            UCPD_MDY_DATE_FORMAT
+        )
+        df = self._get_incidents_back_x_days(date_str)
         return df, self._list_to_parsed_list(df[INCIDENT_KEY_TYPE].to_list())
 
     def get_last_year_days_of_incidents(self) -> (pl.DataFrame, [str]):
-        df = self._get_incidents_back_x_days(365)
+        date_str = (datetime.today() - timedelta(days=365)).strftime(
+            UCPD_MDY_DATE_FORMAT
+        )
+        df = self._get_incidents_back_x_days(date_str)
         return df, self._list_to_parsed_list(df[INCIDENT_KEY_TYPE].to_list())
 
     def get_all_incidents(self) -> (pl.DataFrame, [str]):
-        query = Incident.query().order(-Incident.reported).fetch()
-        df = self._process_incidents(query)
+        df = self._get_incidents_back_x_days()
         return df, self._list_to_parsed_list(df[INCIDENT_KEY_TYPE].to_list())
