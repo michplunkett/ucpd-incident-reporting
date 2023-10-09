@@ -17,3 +17,4 @@ FILE_TYPE_JSON = "json"
 
 # Incident Constants
 INCIDENT_KEY_TYPE = "incident"
+INCIDENT_KEY_REPORTED_DATE = "reported_date"
