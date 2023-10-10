@@ -1,6 +1,8 @@
 """Contains code relating to the Google Cloud Platform Datastore service."""
+import gzip
 import json
-from datetime import datetime, timedelta
+import os
+from datetime import date, datetime, timedelta
 
 import polars as pl
 from google.cloud.datastore.helpers import GeoPoint
@@ -10,9 +12,15 @@ from google.oauth2 import service_account
 from incident_reporting.utils.constants import (
     ENV_GCP_CREDENTIALS,
     ENV_GCP_PROJECT_ID,
+    FILE_OPEN_MODE_READ,
     FILE_TYPE_JSON,
+    INCIDENT_KEY_REPORTED,
+    INCIDENT_KEY_REPORTED_DATE,
     INCIDENT_KEY_TYPE,
-    UCPD_MDY_DATE_FORMAT,
+    INCIDENT_KEY_VALIDATED_LOCATION,
+    TIMEZONE_CHICAGO,
+    UCPD_MDY_KEY_DATE_FORMAT,
+    UTC_DATE_TIME_FORMAT,
 )
 
 
@@ -34,6 +42,13 @@ EXCLUDED_INCIDENT_TYPES = [
     "Harassment by Electronic Means",
     "Well-Being",
     "Threatening Phone Call",
+    "Medical Transport",
+    "Warrant",
+    "Lost Wallet",
+    "Fire Alarm",
+    "Chemical Spill",
+    "Suspicious Mail",
+    "Eavesdropping",
 ]
 
 
@@ -84,13 +99,27 @@ class GoogleNBD:
         return list(parsed_set)
 
     @staticmethod
+    def _standardize_df(df: pl.DataFrame) -> pl.DataFrame:
+        return df.with_columns(
+            pl.col(INCIDENT_KEY_REPORTED)
+            .str.strptime(pl.Datetime, format=UTC_DATE_TIME_FORMAT)
+            .dt.convert_time_zone(TIMEZONE_CHICAGO),
+            pl.col(INCIDENT_KEY_REPORTED_DATE).str.strptime(
+                pl.Date, format=UCPD_MDY_KEY_DATE_FORMAT
+            ),
+            pl.col(INCIDENT_KEY_VALIDATED_LOCATION)
+            .str.split(",")
+            .cast(pl.List(pl.Float64)),
+        )
+
+    @staticmethod
     def _process_incidents(incidents: [Incident]) -> pl.DataFrame:
         incident_list = []
         for i in incidents:
             record = {}
             for key, value in i.to_dict().items():
                 if isinstance(value, GeoPoint):
-                    record[key] = [value.latitude, value.longitude]
+                    record[key] = f"{value.latitude},{value.longitude}"
                     continue
                 record[key] = value
                 incident_list.append(record)
@@ -100,29 +129,59 @@ class GoogleNBD:
                 "|".join(EXCLUDED_INCIDENT_TYPES)
             )
         )
+
+        return GoogleNBD._standardize_df(df)
+
+    @staticmethod
+    def _get_stored_incidents():
+        file_path = (
+            os.getcwd().replace("\\", "/")
+            + "/incident_reporting/data/incident_dump.csv.gz"
+        )
+
+        with gzip.open(file_path, FILE_OPEN_MODE_READ) as f:
+            df = pl.read_csv(f.read())
+
         return df
 
-    def _get_incidents_back_x_days(self, days_back: int) -> pl.DataFrame:
+    def _get_incidents_back_x_days(
+        self, date_limit: date = None
+    ) -> pl.DataFrame:
+        if not date_limit:
+            date_limit = date(2000, 1, 1)
+        stored_df = GoogleNBD._standardize_df(
+            self._get_stored_incidents()
+        ).filter(pl.col(INCIDENT_KEY_REPORTED_DATE) >= date_limit)
+
         with self.client.context():
-            date_str = (datetime.today() - timedelta(days=days_back)).strftime(
-                UCPD_MDY_DATE_FORMAT
-            )
             query = (
-                Incident.query(Incident.reported_date >= date_str)
+                Incident.query(
+                    Incident.reported_date
+                    >= stored_df[INCIDENT_KEY_REPORTED_DATE]
+                    .max()
+                    .strftime(UCPD_MDY_KEY_DATE_FORMAT)
+                )
                 .order(-Incident.reported_date)
                 .fetch()
             )
-            return self._process_incidents(query)
+            df = self._process_incidents(query)
+
+        return pl.concat([stored_df, df]).sort(
+            [INCIDENT_KEY_REPORTED_DATE, INCIDENT_KEY_REPORTED], descending=True
+        )
 
     def get_last_90_days_of_incidents(self) -> (pl.DataFrame, [str]):
-        df = self._get_incidents_back_x_days(90)
+        df = self._get_incidents_back_x_days(
+            (datetime.today() - timedelta(days=90)).date()
+        )
         return df, self._list_to_parsed_list(df[INCIDENT_KEY_TYPE].to_list())
 
-    def get_last_year_days_of_incidents(self) -> (pl.DataFrame, [str]):
-        df = self._get_incidents_back_x_days(365)
+    def get_last_year_of_incidents(self) -> (pl.DataFrame, [str]):
+        df = self._get_incidents_back_x_days(
+            (datetime.today() - timedelta(days=365)).date()
+        )
         return df, self._list_to_parsed_list(df[INCIDENT_KEY_TYPE].to_list())
 
     def get_all_incidents(self) -> (pl.DataFrame, [str]):
-        query = Incident.query().order(-Incident.reported).fetch()
-        df = self._process_incidents(query)
+        df = self._get_incidents_back_x_days()
         return df, self._list_to_parsed_list(df[INCIDENT_KEY_TYPE].to_list())

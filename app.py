@@ -2,7 +2,7 @@
 import streamlit as st
 
 from incident_reporting.pages.map import get_map
-from incident_reporting.pages.spreadsheet import get_spreadsheet
+from incident_reporting.pages.table import get_spreadsheet
 from incident_reporting.pages.time_histogram import get_time_histogram
 
 
