@@ -13,7 +13,6 @@ from incident_reporting.utils.constants import (
 
 def get_spreadsheet():
     df, incident_types = GoogleNBD().get_last_year_of_incidents()
-    print(df)
     st.dataframe(
         df.to_pandas(),
         column_order=[
