@@ -16,7 +16,6 @@ def get_spreadsheet():
     print(df)
     st.dataframe(
         df.to_pandas(),
-        use_container_width=True,
         column_order=[
             INCIDENT_KEY_ID,
             INCIDENT_KEY_TYPE,
