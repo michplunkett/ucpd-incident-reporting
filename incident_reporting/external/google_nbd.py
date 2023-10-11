@@ -17,6 +17,7 @@ from incident_reporting.utils.constants import (
     INCIDENT_KEY_REPORTED,
     INCIDENT_KEY_REPORTED_DATE,
     INCIDENT_KEY_TYPE,
+    INCIDENT_KEY_VALIDATED_ADDRESS,
     INCIDENT_KEY_VALIDATED_LOCATION,
     TIMEZONE_CHICAGO,
     UCPD_MDY_KEY_DATE_FORMAT,
@@ -110,6 +111,7 @@ class GoogleNBD:
             pl.col(INCIDENT_KEY_VALIDATED_LOCATION)
             .str.split(",")
             .cast(pl.List(pl.Float64)),
+            pl.col(INCIDENT_KEY_VALIDATED_ADDRESS).str.to_titlecase(),
         )
 
     @staticmethod
@@ -157,16 +159,21 @@ class GoogleNBD:
             query = (
                 Incident.query(
                     Incident.reported_date
-                    >= stored_df[INCIDENT_KEY_REPORTED_DATE]
+                    > stored_df[INCIDENT_KEY_REPORTED_DATE]
                     .max()
                     .strftime(UCPD_MDY_KEY_DATE_FORMAT)
                 )
                 .order(-Incident.reported_date)
                 .fetch()
             )
-            df = self._process_incidents(query)
 
-        return pl.concat([stored_df, df]).sort(
+        result = (
+            pl.concat([stored_df, self._process_incidents(query)])
+            if len(query)
+            else stored_df
+        )
+
+        return result.sort(
             [INCIDENT_KEY_REPORTED_DATE, INCIDENT_KEY_REPORTED], descending=True
         )
 
