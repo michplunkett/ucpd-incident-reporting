@@ -1,2 +1,4 @@
-def get_map():
-    pass
+import dash
+
+
+dash.register_page(__name__, path="/map")
