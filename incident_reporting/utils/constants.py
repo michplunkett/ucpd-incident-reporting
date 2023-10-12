@@ -18,7 +18,11 @@ FILE_OPEN_MODE_READ = "r"
 FILE_TYPE_JSON = "json"
 
 # Incident Constants
-INCIDENT_KEY_TYPE = "incident"
+INCIDENT_KEY_COMMENTS = "comments"
+INCIDENT_KEY_DISPOSITION = "disposition"
+INCIDENT_KEY_ID = "ucpd_id"
 INCIDENT_KEY_REPORTED = "reported"
 INCIDENT_KEY_REPORTED_DATE = "reported_date"
+INCIDENT_KEY_TYPE = "incident"
+INCIDENT_KEY_VALIDATED_ADDRESS = "validated_address"
 INCIDENT_KEY_VALIDATED_LOCATION = "validated_location"
