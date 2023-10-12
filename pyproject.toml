@@ -16,7 +16,7 @@ google-cloud-ndb = "^2.2.2"
 google-cloud-logging = "^3.8.0"
 pytz = "^2023.3.post1"
 cachetools = "^5.3.1"
-polars = "^0.19.7"
+polars = "^0.19.8"
 watchdog = "^3.0.0"
 dash = "^2.14.0"
 
