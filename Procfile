@@ -1,1 +1,1 @@
-web: sh setup.sh && streamlit run ./incident_reporting/app.py
+web: gunicorn app:server
