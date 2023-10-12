@@ -2,7 +2,8 @@
 from dash import Dash
 
 
-app = Dash(__name__, use_pages=True)
+app = Dash(__name__, pages_folder="incident_reporting/pages/", use_pages=True)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

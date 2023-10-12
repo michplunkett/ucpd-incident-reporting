@@ -3,7 +3,7 @@ import dash
 
 dash.register_page(__name__, path="/")
 
-dash.dcc.Markdown(
+layout = dash.dcc.Markdown(
     """
     # UCPD Incident Tracking
 
