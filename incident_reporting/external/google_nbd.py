@@ -174,6 +174,12 @@ class GoogleNBD:
 
         return result.sort([KEY_REPORTED_DATE, KEY_REPORTED], descending=True)
 
+    def get_last_30_days_of_incidents(self) -> (pl.DataFrame, [str]):
+        df = self._get_incidents_back_x_days(
+            (datetime.today() - timedelta(days=30)).date()
+        )
+        return df, self._list_to_parsed_list(df[KEY_TYPE].to_list())
+
     def get_last_90_days_of_incidents(self) -> (pl.DataFrame, [str]):
         df = self._get_incidents_back_x_days(
             (datetime.today() - timedelta(days=90)).date()
