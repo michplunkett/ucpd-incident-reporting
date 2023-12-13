@@ -58,6 +58,7 @@ class Incident(Model):
 
     ucpd_id = StringProperty(indexed=True)
     incident = StringProperty(indexed=True)
+    predicted_incident = StringProperty()
     reported = StringProperty()
     reported_date = StringProperty(indexed=True)
     occurred = StringProperty()
