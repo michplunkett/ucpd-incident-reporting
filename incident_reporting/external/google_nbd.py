@@ -116,7 +116,9 @@ class GoogleNBD:
         )
 
     @staticmethod
-    def _process_incidents(incidents: [Incident]) -> pl.DataFrame:
+    def _process_incidents(
+        incidents: [Incident], exclude: bool = False
+    ) -> pl.DataFrame:
         incident_list = []
         for i in incidents:
             record = {}
@@ -129,9 +131,13 @@ class GoogleNBD:
         df = pl.DataFrame(incident_list).with_columns(
             pl.col(KEY_VALIDATED_ADDRESS).apply(str.title)
         )
-        df = df.filter(
-            ~pl.col(KEY_TYPE).str.contains("|".join(EXCLUDED_INCIDENT_TYPES))
-        )
+
+        if exclude:
+            df = df.filter(
+                ~pl.col(KEY_TYPE).str.contains(
+                    "|".join(EXCLUDED_INCIDENT_TYPES)
+                )
+            )
 
         return GoogleNBD._standardize_df(df)
 
@@ -148,7 +154,7 @@ class GoogleNBD:
         return df
 
     def _get_incidents_back_x_days(
-        self, date_limit: date = None
+        self, date_limit: date = None, exclude: bool = False
     ) -> pl.DataFrame:
         if not date_limit:
             date_limit = date(2000, 1, 1)
@@ -169,31 +175,37 @@ class GoogleNBD:
             )
 
         result = (
-            pl.concat([stored_df, self._process_incidents(query)])
+            pl.concat([stored_df, self._process_incidents(query, exclude)])
             if len(query)
             else stored_df
         )
 
         return result.sort([KEY_REPORTED_DATE, KEY_REPORTED], descending=True)
 
-    def get_last_30_days_of_incidents(self) -> (pl.DataFrame, [str]):
+    def get_last_30_days_of_incidents(
+        self, exclude: bool = False
+    ) -> (pl.DataFrame, [str]):
         df = self._get_incidents_back_x_days(
-            (datetime.today() - timedelta(days=30)).date()
+            (datetime.today() - timedelta(days=30)).date(), exclude
         )
         return df, self._list_to_parsed_list(df[KEY_TYPE].to_list())
 
-    def get_last_90_days_of_incidents(self) -> (pl.DataFrame, [str]):
+    def get_last_90_days_of_incidents(
+        self, exclude: bool = False
+    ) -> (pl.DataFrame, [str]):
         df = self._get_incidents_back_x_days(
-            (datetime.today() - timedelta(days=90)).date()
+            (datetime.today() - timedelta(days=90)).date(), exclude
         )
         return df, self._list_to_parsed_list(df[KEY_TYPE].to_list())
 
-    def get_last_year_of_incidents(self) -> (pl.DataFrame, [str]):
+    def get_last_year_of_incidents(
+        self, exclude: bool = False
+    ) -> (pl.DataFrame, [str]):
         df = self._get_incidents_back_x_days(
-            (datetime.today() - timedelta(days=365)).date()
+            (datetime.today() - timedelta(days=365)).date(), exclude
         )
         return df, self._list_to_parsed_list(df[KEY_TYPE].to_list())
 
-    def get_all_incidents(self) -> (pl.DataFrame, [str]):
-        df = self._get_incidents_back_x_days()
+    def get_all_incidents(self, exclude: bool = False) -> (pl.DataFrame, [str]):
+        df = self._get_incidents_back_x_days(exclude=exclude)
         return df, self._list_to_parsed_list(df[KEY_TYPE].to_list())
