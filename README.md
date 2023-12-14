@@ -17,4 +17,4 @@ This application makes use of scraped incidents from the UCPD Daily Incident Rep
 
 ## Standard Commands
 - `make lint`: Runs `pre-commit` and creates the `requirements.txt` file
-- `make run`: Starts the `streamlit` application
+- `make run`: Starts the `FastAPI` application
