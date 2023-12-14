@@ -82,6 +82,14 @@ repos:
           - --use-gitignore
           - --ignore=H006,T028,H031,H021,H013,H011
 
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.1.0
+    hooks:
+      - id: prettier
+        files: incident_reporting/static/js/
+        args:
+          - --no-config
+
   - repo: https://github.com/pre-commit/mirrors-eslint
     rev: v8.55.0
     hooks:
@@ -90,14 +98,6 @@ repos:
         args:
           - --no-eslintrc
           - --env=es6
-
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.1.0
-    hooks:
-      - id: prettier
-        files: incident_reporting/static/js/
-        args:
-          - --no-config
 
   - repo: https://github.com/psf/black
     rev: 23.7.0
