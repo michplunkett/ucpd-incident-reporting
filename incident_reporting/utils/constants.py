@@ -29,3 +29,29 @@ KEY_REPORTED_DATE = "reported_date"
 KEY_TYPE = "incident"
 KEY_VALIDATED_ADDRESS = "validated_address"
 KEY_VALIDATED_LOCATION = "validated_location"
+
+# List of incident types that we exclude from location graphics
+EXCLUDED_CATEGORIES = [
+    "Fondling",
+    "Medical Call",
+    "Luring a Minor",
+    "Lost Property",
+    "Stalking",
+    "Sexual Assault",
+    "Dating",
+    "Stalking",
+    "Domestic",
+    "Sex",
+    "Found Property",
+    "Mental Health",
+    "Harassment by Electronic Means",
+    "Well-Being",
+    "Threatening Phone Call",
+    "Medical Transport",
+    "Warrant",
+    "Lost Wallet",
+    "Fire Alarm",
+    "Chemical Spill",
+    "Suspicious Mail",
+    "Eavesdropping",
+]
