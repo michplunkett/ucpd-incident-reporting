@@ -1,6 +1,9 @@
 import os
 
 
+# Application Constants
+LOGGING_FORMAT = "%(levelname)s:\t%(message)s"
+
 # Date/Time Constants
 TIMEZONE_CHICAGO = "America/Chicago"
 UCPD_DATE_FORMAT = "%m/%d/%y %I:%M %p"
