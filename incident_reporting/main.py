@@ -29,3 +29,24 @@ client = GoogleNBD()
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
+
+
+@app.get("/thirty_day_map", response_class=HTMLResponse)
+def thirty_day_map(request: Request):
+    return templates.TemplateResponse(
+        "thirty_day_map.html", {"request": request}
+    )
+
+
+@app.get("/hourly_summation", response_class=HTMLResponse)
+def hourly_summation(request: Request):
+    return templates.TemplateResponse(
+        "hourly_summation.html", {"request": request}
+    )
+
+
+@app.get("/yearly_summation", response_class=HTMLResponse)
+def yearly_summation(request: Request):
+    return templates.TemplateResponse(
+        "yearly_summation.html", {"request": request}
+    )
