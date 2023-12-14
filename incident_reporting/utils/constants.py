@@ -31,7 +31,7 @@ KEY_VALIDATED_ADDRESS = "validated_address"
 KEY_VALIDATED_LOCATION = "validated_location"
 
 # List of incident types that we exclude from location graphics
-EXCLUDED_CATEGORIES = [
+EXCLUDED_TYPES = [
     "Fondling",
     "Medical Call",
     "Luring a Minor",

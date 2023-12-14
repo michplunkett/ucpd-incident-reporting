@@ -126,7 +126,9 @@ class GoogleNBD:
                     continue
                 record[key] = value
                 incident_list.append(record)
-        df = pl.DataFrame(incident_list)
+        df = pl.DataFrame(incident_list).with_columns(
+            pl.col(KEY_VALIDATED_ADDRESS).apply(str.title)
+        )
         df = df.filter(
             ~pl.col(KEY_TYPE).str.contains("|".join(EXCLUDED_INCIDENT_TYPES))
         )
