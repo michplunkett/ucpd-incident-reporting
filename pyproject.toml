@@ -12,7 +12,6 @@ google-cloud-ndb = "^2.2.2"
 google-cloud-logging = "^3.8.0"
 cachetools = "^5.3.1"
 polars = "^0.19.8"
-gunicorn = "^21.2.0"
 fastapi = "^0.105.0"
 uvicorn = "^0.24.0.post1"
 
