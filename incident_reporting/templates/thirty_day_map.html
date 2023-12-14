@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}
+  UCPD Incident Reporter - Monthly Map
+{% endblock title %}
+{% block graphic_script %}
+  <script type="text/javascript"
+          src="{{ url_for('static', path='/js/thirty_day_map.js') }}"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+{% endblock graphic_script %}
+{% block content %}
+  <div id="graph-container"></div>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7LDqcFvKtE2u_SRUiZY4OR-KSOryqAAs&callback=initMap&v=weekly"
+          defer></script>
+{% endblock content %}

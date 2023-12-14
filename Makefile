@@ -1,8 +1,13 @@
+default: create-requirements lint
+
+.PHONY: create-requirements
+create-requirements:
+	poetry export --without-hashes --format=requirements.txt > requirements.txt
+
 .PHONY: lint
 lint:
-	poetry export --without-hashes --format=requirements.txt > requirements.txt
 	pre-commit run --all-files
 
 .PHONY: run
 run:
-	python app.py
+	uvicorn incident_reporting.main:app --reload --host 0.0.0.0 --port 8000

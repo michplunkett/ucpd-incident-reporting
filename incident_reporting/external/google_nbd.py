@@ -14,11 +14,11 @@ from incident_reporting.utils.constants import (
     ENV_GCP_PROJECT_ID,
     FILE_OPEN_MODE_READ,
     FILE_TYPE_JSON,
-    INCIDENT_KEY_REPORTED,
-    INCIDENT_KEY_REPORTED_DATE,
-    INCIDENT_KEY_TYPE,
-    INCIDENT_KEY_VALIDATED_ADDRESS,
-    INCIDENT_KEY_VALIDATED_LOCATION,
+    KEY_REPORTED,
+    KEY_REPORTED_DATE,
+    KEY_TYPE,
+    KEY_VALIDATED_ADDRESS,
+    KEY_VALIDATED_LOCATION,
     TIMEZONE_CHICAGO,
     UCPD_MDY_KEY_DATE_FORMAT,
     UTC_DATE_TIME_FORMAT,
@@ -58,6 +58,7 @@ class Incident(Model):
 
     ucpd_id = StringProperty(indexed=True)
     incident = StringProperty(indexed=True)
+    predicted_incident = StringProperty()
     reported = StringProperty()
     reported_date = StringProperty(indexed=True)
     occurred = StringProperty()
@@ -102,16 +103,16 @@ class GoogleNBD:
     @staticmethod
     def _standardize_df(df: pl.DataFrame) -> pl.DataFrame:
         return df.with_columns(
-            pl.col(INCIDENT_KEY_REPORTED)
+            pl.col(KEY_REPORTED)
             .str.strptime(pl.Datetime, format=UTC_DATE_TIME_FORMAT)
             .dt.convert_time_zone(TIMEZONE_CHICAGO),
-            pl.col(INCIDENT_KEY_REPORTED_DATE).str.strptime(
+            pl.col(KEY_REPORTED_DATE).str.strptime(
                 pl.Date, format=UCPD_MDY_KEY_DATE_FORMAT
             ),
-            pl.col(INCIDENT_KEY_VALIDATED_LOCATION)
+            pl.col(KEY_VALIDATED_LOCATION)
             .str.split(",")
             .cast(pl.List(pl.Float64)),
-            pl.col(INCIDENT_KEY_VALIDATED_ADDRESS).str.to_titlecase(),
+            pl.col(KEY_VALIDATED_ADDRESS).str.to_titlecase(),
         )
 
     @staticmethod
@@ -127,9 +128,7 @@ class GoogleNBD:
                 incident_list.append(record)
         df = pl.DataFrame(incident_list)
         df = df.filter(
-            ~pl.col(INCIDENT_KEY_TYPE).str.contains(
-                "|".join(EXCLUDED_INCIDENT_TYPES)
-            )
+            ~pl.col(KEY_TYPE).str.contains("|".join(EXCLUDED_INCIDENT_TYPES))
         )
 
         return GoogleNBD._standardize_df(df)
@@ -153,13 +152,13 @@ class GoogleNBD:
             date_limit = date(2000, 1, 1)
         stored_df = GoogleNBD._standardize_df(
             self._get_stored_incidents()
-        ).filter(pl.col(INCIDENT_KEY_REPORTED_DATE) >= date_limit)
+        ).filter(pl.col(KEY_REPORTED_DATE) >= date_limit)
 
         with self.client.context():
             query = (
                 Incident.query(
                     Incident.reported_date
-                    > stored_df[INCIDENT_KEY_REPORTED_DATE]
+                    > stored_df[KEY_REPORTED_DATE]
                     .max()
                     .strftime(UCPD_MDY_KEY_DATE_FORMAT)
                 )
@@ -173,22 +172,26 @@ class GoogleNBD:
             else stored_df
         )
 
-        return result.sort(
-            [INCIDENT_KEY_REPORTED_DATE, INCIDENT_KEY_REPORTED], descending=True
+        return result.sort([KEY_REPORTED_DATE, KEY_REPORTED], descending=True)
+
+    def get_last_30_days_of_incidents(self) -> (pl.DataFrame, [str]):
+        df = self._get_incidents_back_x_days(
+            (datetime.today() - timedelta(days=30)).date()
         )
+        return df, self._list_to_parsed_list(df[KEY_TYPE].to_list())
 
     def get_last_90_days_of_incidents(self) -> (pl.DataFrame, [str]):
         df = self._get_incidents_back_x_days(
             (datetime.today() - timedelta(days=90)).date()
         )
-        return df, self._list_to_parsed_list(df[INCIDENT_KEY_TYPE].to_list())
+        return df, self._list_to_parsed_list(df[KEY_TYPE].to_list())
 
     def get_last_year_of_incidents(self) -> (pl.DataFrame, [str]):
         df = self._get_incidents_back_x_days(
             (datetime.today() - timedelta(days=365)).date()
         )
-        return df, self._list_to_parsed_list(df[INCIDENT_KEY_TYPE].to_list())
+        return df, self._list_to_parsed_list(df[KEY_TYPE].to_list())
 
     def get_all_incidents(self) -> (pl.DataFrame, [str]):
         df = self._get_incidents_back_x_days()
-        return df, self._list_to_parsed_list(df[INCIDENT_KEY_TYPE].to_list())
+        return df, self._list_to_parsed_list(df[KEY_TYPE].to_list())
