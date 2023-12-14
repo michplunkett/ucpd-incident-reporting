@@ -1,0 +1,14 @@
+#incident-map {
+    height: 100%;
+}
+
+.incident-information {
+    margin: 0 0 2px;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
