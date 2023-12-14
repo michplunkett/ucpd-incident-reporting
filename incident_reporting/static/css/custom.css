@@ -1,5 +1,9 @@
+#category-select {
+    height: 50px;
+}
+
 #incident-map {
-    height: 100%;
+    height: calc(100% - 50px);
 }
 
 .incident-information {

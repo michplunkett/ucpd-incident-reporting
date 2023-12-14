@@ -74,7 +74,7 @@ const mapStyles = [
 ];
 
 function createMap() {
-  let map = new google.maps.Map(document.getElementById("graph-container"), {
+  let map = new google.maps.Map(document.getElementById("incident-map"), {
     zoom: 14,
     center: new google.maps.LatLng(41.794295, -87.590701),
     mapTypeId: "terrain",
