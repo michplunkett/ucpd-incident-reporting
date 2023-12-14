@@ -10,4 +10,4 @@ lint:
 
 .PHONY: run
 run:
-	uvicorn prijateli_tree.app.main:app --reload --host 0.0.0.0 --port 8000
+	uvicorn incident_reporting.main:app --reload --host 0.0.0.0 --port 8000
