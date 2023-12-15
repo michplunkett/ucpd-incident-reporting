@@ -113,7 +113,6 @@ class GoogleNBD:
             .str.split(",")
             .cast(pl.List(pl.Float64)),
             pl.col(KEY_VALIDATED_ADDRESS).str.to_titlecase(),
-            pl.col(KEY_VALIDATED_ADDRESS).apply(str.title),
         )
 
     @staticmethod
