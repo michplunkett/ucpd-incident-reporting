@@ -73,6 +73,7 @@
 
 #category-select {
     height: 50px;
+    padding-left: 20px;
 }
 
 #incident-map {
