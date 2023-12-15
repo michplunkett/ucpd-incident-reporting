@@ -113,6 +113,7 @@ class GoogleNBD:
             .str.split(",")
             .cast(pl.List(pl.Float64)),
             pl.col(KEY_VALIDATED_ADDRESS).str.to_titlecase(),
+            pl.col(KEY_VALIDATED_ADDRESS).apply(str.title),
         )
 
     @staticmethod
@@ -126,11 +127,8 @@ class GoogleNBD:
                     continue
                 record[key] = value
                 incident_list.append(record)
-        df = pl.DataFrame(incident_list).with_columns(
-            pl.col(KEY_VALIDATED_ADDRESS).apply(str.title)
-        )
 
-        return GoogleNBD._standardize_df(df)
+        return GoogleNBD._standardize_df(pl.DataFrame(incident_list))
 
     @staticmethod
     def _get_stored_incidents():
