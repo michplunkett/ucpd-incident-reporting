@@ -125,7 +125,7 @@ class GoogleNBD:
                     record[key] = f"{value.latitude},{value.longitude}"
                     continue
                 record[key] = value
-                incident_list.append(record)
+            incident_list.append(record)
 
         return GoogleNBD._standardize_df(pl.DataFrame(incident_list))
 
