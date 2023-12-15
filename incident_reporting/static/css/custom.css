@@ -79,6 +79,11 @@
     height: calc(100% - 50px);
 }
 
+.incident-title {
+    margin-top:2px;
+    margin-bottom: 8px;
+}
+
 .incident-information {
     margin: 0 0 2px;
 }
