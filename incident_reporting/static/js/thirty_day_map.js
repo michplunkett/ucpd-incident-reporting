@@ -1,11 +1,5 @@
-function titleCase(str) {
-  return str.replace(/\w\S*/g, function (txt) {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-  });
-}
-
-const incidents = [];
-
+let map = undefined;
+let incidents = [];
 const mapStyles = [
   {
     featureType: "poi.attraction",
@@ -73,26 +67,36 @@ const mapStyles = [
   },
 ];
 
+async function getMapIncidents() {
+  const response = await fetch("/incidents/map");
+  return response.json();
+}
+
 function createMap() {
-  let map = new google.maps.Map(document.getElementById("incident-map"), {
+  map = new google.maps.Map(document.getElementById("incident-map"), {
     zoom: 14,
     center: new google.maps.LatLng(41.794295, -87.590701),
     mapTypeId: "terrain",
     styles: mapStyles,
   });
+}
+
+window.initMap = createMap;
+
+getMapIncidents().then((r) => {
+  console.log(r);
+  incidents = r["incidents"];
 
   for (let i = 0; i < incidents.length; i++) {
     let incident = incidents[i];
-    incident.titleAddress = titleCase(incident.address);
 
     let content = `
             <div id="content">
-                <h3 style="margin-top:2px; margin-bottom: 8px;">${incident.incident}</h3>
-                <p class="incident-information">${incident.titleAddress}</p>
-                <p class="incident-information">${incident.occurred}</p>
-                <p class="incident-information"><b>Number of Victims:</b> ${incident.numberOfVictims}</p>
-                 <p class="incident-information"><b>UCPD ID:</b> ${incident.ucpdID}
-                 </div>
+              <h3 class="incident-title">${incident.incident}</h3>
+              <p class="incident-information">${incident.validated_address}</p>
+              <p class="incident-information">${incident.occurred}</p>
+              <p class="incident-information"><b>UCPD ID:</b> ${incident.ucpd_id}
+            </div>
         `;
 
     const infoWindow = new google.maps.InfoWindow({
@@ -102,7 +106,10 @@ function createMap() {
 
     let marker = new google.maps.Marker({
       title: `${incident.incident} @ ${incident.occurred}`,
-      position: new google.maps.LatLng(incident.coords[0], incident.coords[1]),
+      position: new google.maps.LatLng(
+        incident.validated_location[0],
+        incident.validated_location[1],
+      ),
       map: map,
     });
 
@@ -113,6 +120,4 @@ function createMap() {
       });
     });
   }
-}
-
-window.initMap = createMap;
+});
