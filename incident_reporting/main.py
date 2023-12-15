@@ -7,7 +7,13 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from incident_reporting.external.google_nbd import GoogleNBD
-from incident_reporting.utils.constants import LOGGING_FORMAT
+from incident_reporting.utils.constants import (
+    KEY_REPORTED,
+    KEY_REPORTED_DATE,
+    LOGGING_FORMAT,
+    UCPD_DATE_FORMAT,
+    UCPD_MDY_DATE_FORMAT,
+)
 
 
 logging.basicConfig(level=logging.INFO, format=LOGGING_FORMAT)
@@ -42,9 +48,16 @@ def thirty_day_map(request: Request):
 def get_map_incidents():
     df, types = client.get_last_30_days_of_incidents(True)
 
-    return JSONResponse(
-        content={"incidents": df.write_json(row_oriented=True), "types": types}
-    )
+    # Convert date and datetime objects to strings
+    df_dict = df.to_dicts()
+    for i in range(len(df_dict)):
+        for key, value in df_dict[i].items():
+            if key == KEY_REPORTED:
+                df_dict[i][KEY_REPORTED] = value.strftime(UCPD_MDY_DATE_FORMAT)
+            elif key == KEY_REPORTED_DATE:
+                df_dict[i][KEY_REPORTED_DATE] = value.strftime(UCPD_DATE_FORMAT)
+
+    return JSONResponse(content={"incidents": df_dict, "types": types})
 
 
 @app.get("/hourly_summation", response_class=HTMLResponse)
