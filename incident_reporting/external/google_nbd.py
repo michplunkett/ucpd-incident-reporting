@@ -116,9 +116,7 @@ class GoogleNBD:
         )
 
     @staticmethod
-    def _process_incidents(
-        incidents: [Incident], exclude: bool = False
-    ) -> pl.DataFrame:
+    def _process_incidents(incidents: [Incident]) -> pl.DataFrame:
         incident_list = []
         for i in incidents:
             record = {}
@@ -131,13 +129,6 @@ class GoogleNBD:
         df = pl.DataFrame(incident_list).with_columns(
             pl.col(KEY_VALIDATED_ADDRESS).apply(str.title)
         )
-
-        if exclude:
-            df = df.filter(
-                ~pl.col(KEY_TYPE).str.contains(
-                    "|".join(EXCLUDED_INCIDENT_TYPES)
-                )
-            )
 
         return GoogleNBD._standardize_df(df)
 
@@ -174,13 +165,22 @@ class GoogleNBD:
                 .fetch()
             )
 
-        result = (
-            pl.concat([stored_df, self._process_incidents(query, exclude)])
-            if len(query)
-            else stored_df
-        )
+            result = (
+                pl.concat([stored_df, self._process_incidents(query)])
+                if len(query)
+                else stored_df
+            )
 
-        return result.sort([KEY_REPORTED_DATE, KEY_REPORTED], descending=True)
+            if exclude:
+                result = result.filter(
+                    ~pl.col(KEY_TYPE).str.contains(
+                        "|".join(EXCLUDED_INCIDENT_TYPES)
+                    )
+                )
+
+            return result.sort(
+                [KEY_REPORTED_DATE, KEY_REPORTED], descending=True
+            )
 
     def get_last_30_days_of_incidents(
         self, exclude: bool = False
