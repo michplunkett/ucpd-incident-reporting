@@ -97,7 +97,7 @@ repos:
         files: incident_reporting/static/js/
         args:
           - --no-eslintrc
-          - --env=es6
+          - --env=es2024
 
   - repo: https://github.com/psf/black
     rev: 23.7.0
