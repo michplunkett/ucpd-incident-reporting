@@ -1,5 +1,6 @@
-let map = undefined;
 let incidents = [];
+let infoWindow = undefined;
+let map = undefined;
 const mapStyles = [
   {
     featureType: "poi.attraction",
@@ -66,6 +67,7 @@ const mapStyles = [
     ],
   },
 ];
+let markers = [];
 
 async function getMapIncidents() {
   const response = await fetch("/incidents/map");
@@ -79,18 +81,13 @@ function createMap() {
     mapTypeId: "terrain",
     styles: mapStyles,
   });
-}
 
-window.initMap = createMap;
+  // Get incidents once the map is loaded
+  getMapIncidents().then((r) => {
+    incidents = r["incidents"];
 
-getMapIncidents().then((r) => {
-  console.log(r);
-  incidents = r["incidents"];
-
-  for (let i = 0; i < incidents.length; i++) {
-    let incident = incidents[i];
-
-    let content = `
+    incidents.forEach((incident) => {
+      let content = `
             <div id="content">
               <h3 class="incident-title">${incident.incident}</h3>
               <p class="incident-information">${incident.validated_address}</p>
@@ -99,25 +96,58 @@ getMapIncidents().then((r) => {
             </div>
         `;
 
-    const infoWindow = new google.maps.InfoWindow({
-      content: content,
-      ariaLabel: "Uluru",
-    });
+      let marker = new google.maps.Marker({
+        title: `${incident.incident} @ ${incident.occurred}`,
+        position: new google.maps.LatLng(
+          incident.validated_location[0],
+          incident.validated_location[1],
+        ),
+        map: map,
+      });
 
-    let marker = new google.maps.Marker({
-      title: `${incident.incident} @ ${incident.occurred}`,
-      position: new google.maps.LatLng(
-        incident.validated_location[0],
-        incident.validated_location[1],
-      ),
-      map: map,
-    });
+      // Add an info when a marker is clicked
+      marker.addListener("click", () => {
+        // If an info window is already open, close it
+        if (infoWindow) {
+          infoWindow.close();
+        }
 
-    marker.addListener("click", () => {
-      infoWindow.open({
-        anchor: marker,
-        map,
+        infoWindow = new google.maps.InfoWindow({
+          content: content,
+          ariaLabel: "Uluru",
+        });
+
+        infoWindow.open({
+          anchor: marker,
+          map,
+        });
+      });
+
+      markers.push(marker);
+    });
+  });
+
+  document
+    .getElementById("incident-type")
+    .addEventListener("change", (event) => {
+      // Close the open info window when changing incident types
+      if (infoWindow) {
+        infoWindow.close();
+        infoWindow = undefined;
+      }
+
+      const selectValue = event.target.value;
+      markers.forEach((marker) => {
+        if (
+          selectValue === "" ||
+          (selectValue !== "" && marker.title.includes(selectValue))
+        ) {
+          marker.setMap(map);
+        } else {
+          marker.setMap(null);
+        }
       });
     });
-  }
-});
+}
+
+window.initMap = createMap;
