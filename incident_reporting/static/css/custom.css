@@ -1,0 +1,105 @@
+@font-face {
+    font-family: 'HCo_Verlag', sans-serif;
+    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-Book.otf')
+        format('opentype');
+}
+
+@font-face {
+    font-family: 'HCo_Verlag', sans-serif;
+    font-style: italic;
+    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-BookItalic.otf')
+        format('opentype');
+}
+
+@font-face {
+    font-family: 'HCo_Verlag', sans-serif;
+    font-weight: 200;
+    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-XLight.otf')
+        format('opentype');
+}
+
+@font-face {
+    font-family: 'HCo_Verlag', sans-serif;
+    font-weight: 200;
+    font-style: italic;
+    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-XLightItalic.otf')
+        format('opentype');
+}
+
+@font-face {
+    font-family: 'HCo_Verlag', sans-serif;
+    font-weight: 300;
+    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-Light.otf')
+        format('opentype');
+}
+
+@font-face {
+    font-family: 'HCo_Verlag', sans-serif;
+    font-weight: 300;
+    font-style: italic;
+    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-LightItalic.otf')
+        format('opentype');
+}
+
+@font-face {
+    font-family: 'HCo_Verlag', sans-serif;
+    font-weight: 700;
+    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-Bold.otf')
+        format('opentype');
+}
+
+@font-face {
+    font-family: 'HCo_Verlag', sans-serif;
+    font-weight: 700;
+    font-style: italic;
+    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-BoldItalic.otf')
+        format('opentype');
+}
+
+@font-face {
+    font-family: 'HCo_Verlag', sans-serif;
+    font-weight: 900;
+    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-Black.otf')
+        format('opentype');
+}
+
+@font-face {
+    font-family: 'HCo_Verlag', sans-serif;
+    font-weight: 900;
+    font-style: italic;
+    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-BlackItalic.otf')
+        format('opentype');
+}
+
+
+
+#category-selection {
+    height: 50px;
+    padding-left: 20px;
+    padding-top: 10px;
+}
+
+#category-selection * {
+    display: inline;
+}
+
+#incident-map {
+    height: calc(100% - 50px);
+}
+
+.incident-title {
+    margin-top:2px;
+    margin-bottom: 8px;
+}
+
+.incident-information {
+    margin: 0 0 2px;
+}
+
+html,
+body {
+    height: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}

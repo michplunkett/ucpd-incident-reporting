@@ -29,3 +29,6 @@ KEY_REPORTED_DATE = "reported_date"
 KEY_TYPE = "incident"
 KEY_VALIDATED_ADDRESS = "validated_address"
 KEY_VALIDATED_LOCATION = "validated_location"
+
+# Type Constants
+TYPE_INFORMATION = "Information"

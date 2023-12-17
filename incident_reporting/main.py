@@ -2,12 +2,19 @@ import logging
 from pathlib import Path
 
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from incident_reporting.external.google_nbd import GoogleNBD
-from incident_reporting.utils.constants import LOGGING_FORMAT
+from incident_reporting.utils.constants import (
+    KEY_REPORTED,
+    KEY_REPORTED_DATE,
+    LOGGING_FORMAT,
+    TYPE_INFORMATION,
+    UCPD_DATE_FORMAT,
+    UCPD_MDY_DATE_FORMAT,
+)
 
 
 logging.basicConfig(level=logging.INFO, format=LOGGING_FORMAT)
@@ -33,9 +40,30 @@ def home(request: Request):
 
 @app.get("/thirty_day_map", response_class=HTMLResponse)
 def thirty_day_map(request: Request):
+    _, types = client.get_last_30_days_of_incidents(True)
+    if TYPE_INFORMATION in types:
+        types.remove(TYPE_INFORMATION)
+    types.sort()
+
     return templates.TemplateResponse(
-        "thirty_day_map.html", {"request": request}
+        "thirty_day_map.html", {"request": request, "types": types}
     )
+
+
+@app.get("/incidents/map", response_class=JSONResponse)
+def get_map_incidents():
+    df, _ = client.get_last_30_days_of_incidents(True)
+
+    # Convert date and datetime objects to strings
+    df_dict = df.to_dicts()
+    for i in range(len(df_dict)):
+        for key, value in df_dict[i].items():
+            if key == KEY_REPORTED:
+                df_dict[i][KEY_REPORTED] = value.strftime(UCPD_MDY_DATE_FORMAT)
+            elif key == KEY_REPORTED_DATE:
+                df_dict[i][KEY_REPORTED_DATE] = value.strftime(UCPD_DATE_FORMAT)
+
+    return JSONResponse(content={"incidents": df_dict})
 
 
 @app.get("/hourly_summation", response_class=HTMLResponse)
