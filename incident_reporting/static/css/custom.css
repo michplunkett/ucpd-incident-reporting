@@ -71,9 +71,16 @@
         format('opentype');
 }
 
-#category-select {
+
+
+#category-selection {
     height: 50px;
     padding-left: 20px;
+    padding-top: 10px;
+}
+
+#category-selection * {
+    display: inline;
 }
 
 #incident-map {
@@ -92,6 +99,7 @@
 html,
 body {
     height: 100%;
+    max-width: 100%;
     margin: 0;
     padding: 0;
 }
