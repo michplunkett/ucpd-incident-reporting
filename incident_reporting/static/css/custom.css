@@ -71,7 +71,9 @@
         format('opentype');
 }
 
-
+#home-container {
+    padding: 20px;
+}
 
 #category-selection {
     height: 50px;
