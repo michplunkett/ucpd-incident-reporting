@@ -37,12 +37,12 @@ client = GoogleNBD()
 
 
 @app.get("/", response_class=HTMLResponse)
-def home(request: Request) -> templates.TemplateResponse:
+def home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
 
 @app.get("/thirty_day_map", response_class=HTMLResponse)
-def thirty_day_map(request: Request) -> templates.TemplateResponse:
+def thirty_day_map(request: Request):
     _, types = client.get_last_30_days_of_incidents(True)
     if TYPE_INFORMATION in types:
         types.remove(TYPE_INFORMATION)
@@ -71,7 +71,7 @@ def get_map_incidents() -> JSONResponse:
 
 
 @app.get("/hourly_summation", response_class=HTMLResponse)
-def hourly_summation(request: Request) -> templates.TemplateResponse:
+def hourly_summation(request: Request):
     return templates.TemplateResponse(
         "hourly_summation.html", {"request": request}
     )
@@ -94,15 +94,15 @@ def get_hourly_incidents() -> JSONResponse:
         for t in types:
             if t in df_dict[i][KEY_TYPE]:
                 if t in season_summaries[df_dict[i][KEY_SEASON]]:
-                    season_summaries[df_dict[i][KEY_SEASON]] += 1
+                    season_summaries[df_dict[i][KEY_SEASON]][t] += 1
                 else:
-                    season_summaries[df_dict[i][KEY_SEASON]] = 1
+                    season_summaries[df_dict[i][KEY_SEASON]][t] = 1
 
     return JSONResponse(content={"season_summaries": season_summaries})
 
 
 @app.get("/yearly_summation", response_class=HTMLResponse)
-def yearly_summation(request: Request) -> templates.TemplateResponse:
+def yearly_summation(request: Request):
     return templates.TemplateResponse(
         "yearly_summation.html", {"request": request}
     )
