@@ -83,7 +83,7 @@ def get_hourly_incidents() -> JSONResponse:
         summer_hours,
         total_hours,
         winter_hours,
-    ) = create_seasonal_incident_totals(**client.get_all_incidents())
+    ) = create_seasonal_incident_totals(*client.get_all_incidents())
 
     return JSONResponse(
         content={
