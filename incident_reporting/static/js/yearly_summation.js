@@ -1,1 +1,1 @@
-const yearlySummation = d3.select("#graph-container").append("svg");
+const yearlySummation = d3.select("#visual-container").append("svg");

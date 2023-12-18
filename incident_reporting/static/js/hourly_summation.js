@@ -1,4 +1,4 @@
-const hourlySummation = d3.select("#graph-container").append("svg");
+const hourlySummation = d3.select("#visual-container").append("svg");
 let seasonSummaries = {};
 
 async function getIncidents() {
