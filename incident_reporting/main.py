@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -37,12 +37,12 @@ client = GoogleNBD()
 
 
 @app.get("/", response_class=HTMLResponse)
-def home(request: Request):
+def home(request: Request) -> Response:
     return templates.TemplateResponse("home.html", {"request": request})
 
 
 @app.get("/thirty_day_map", response_class=HTMLResponse)
-def thirty_day_map(request: Request):
+def thirty_day_map(request: Request) -> Response:
     _, types = client.get_last_30_days_of_incidents(True)
     if TYPE_INFORMATION in types:
         types.remove(TYPE_INFORMATION)
@@ -71,7 +71,7 @@ def get_map_incidents() -> JSONResponse:
 
 
 @app.get("/hourly_summation", response_class=HTMLResponse)
-def hourly_summation(request: Request):
+def hourly_summation(request: Request) -> Response:
     return templates.TemplateResponse(
         "hourly_summation.html", {"request": request}
     )
@@ -102,7 +102,7 @@ def get_hourly_incidents() -> JSONResponse:
 
 
 @app.get("/yearly_summation", response_class=HTMLResponse)
-def yearly_summation(request: Request):
+def yearly_summation(request: Request) -> Response:
     return templates.TemplateResponse(
         "yearly_summation.html", {"request": request}
     )
