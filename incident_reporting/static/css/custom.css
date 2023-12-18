@@ -85,7 +85,7 @@
     display: inline;
 }
 
-#incident-map {
+#visual-container {
     height: calc(100% - 50px);
 }
 
