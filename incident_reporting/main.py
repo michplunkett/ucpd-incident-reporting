@@ -10,11 +10,13 @@ from incident_reporting.external.google_nbd import GoogleNBD
 from incident_reporting.utils.constants import (
     KEY_REPORTED,
     KEY_REPORTED_DATE,
+    KEY_SEASON,
     LOGGING_FORMAT,
     TYPE_INFORMATION,
     UCPD_DATE_FORMAT,
     UCPD_MDY_DATE_FORMAT,
 )
+from incident_reporting.utils.functions import determine_season
 
 
 logging.basicConfig(level=logging.INFO, format=LOGGING_FORMAT)
@@ -57,17 +59,30 @@ def get_map_incidents():
     # Convert date and datetime objects to strings
     df_dict = df.to_dicts()
     for i in range(len(df_dict)):
-        for key, value in df_dict[i].items():
-            if key == KEY_REPORTED:
-                df_dict[i][KEY_REPORTED] = value.strftime(UCPD_MDY_DATE_FORMAT)
-            elif key == KEY_REPORTED_DATE:
-                df_dict[i][KEY_REPORTED_DATE] = value.strftime(UCPD_DATE_FORMAT)
+        df_dict[i][KEY_REPORTED] = df_dict[i][KEY_REPORTED].strftime(
+            UCPD_MDY_DATE_FORMAT
+        )
+        df_dict[i][KEY_REPORTED_DATE] = df_dict[i][KEY_REPORTED_DATE].strftime(
+            UCPD_DATE_FORMAT
+        )
 
     return JSONResponse(content={"incidents": df_dict})
 
 
 @app.get("/hourly_summation", response_class=HTMLResponse)
 def hourly_summation(request: Request):
+    df, _ = client.get_last_30_days_of_incidents(True)
+    df_dict = df.to_dicts()
+
+    for i in range(len(df_dict)):
+        df_dict[i][KEY_SEASON] = determine_season(df_dict[i][KEY_REPORTED])
+        df_dict[i][KEY_REPORTED] = df_dict[i][KEY_REPORTED].strftime(
+            UCPD_MDY_DATE_FORMAT
+        )
+        df_dict[i][KEY_REPORTED_DATE] = df_dict[i][KEY_REPORTED_DATE].strftime(
+            UCPD_DATE_FORMAT
+        )
+
     return templates.TemplateResponse(
         "hourly_summation.html", {"request": request}
     )
