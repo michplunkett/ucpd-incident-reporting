@@ -6,9 +6,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from incident_reporting.external.google_nbd import (
-    GoogleNBD,
-)
+from incident_reporting.external.google_nbd import GoogleNBD
 from incident_reporting.utils.constants import (
     KEY_REPORTED,
     KEY_REPORTED_DATE,
