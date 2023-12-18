@@ -46,7 +46,6 @@ EXCLUDED_INCIDENT_TYPES = [
     "Sex",
     "Sexual Assault",
     "Stalking",
-    "Stalking",
     "Suspicious Mail",
     "Threatening Phone Call",
     "Violation Of Order Of Protection",
