@@ -1,5 +1,8 @@
 const hourlySummation = d3.select("#visual-container").append("svg");
-let seasonSummaries = {};
+let fallSummary = {};
+let springSummary = {};
+let summerSummary = {};
+let winterSummary = {};
 
 async function getIncidents() {
   const response = await fetch("/incidents/hourly");
@@ -7,6 +10,13 @@ async function getIncidents() {
 }
 
 getIncidents().then((r) => {
-  seasonSummaries = r["season_summaries"];
-  console.log(seasonSummaries);
+  fallSummary = r["fall"];
+  springSummary = r["spring"];
+  summerSummary = r["summer"];
+  winterSummary = r["winter"];
+
+  console.log(fallSummary);
+  console.log(springSummary);
+  console.log(summerSummary);
+  console.log(winterSummary);
 });
