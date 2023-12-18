@@ -10,13 +10,12 @@ from incident_reporting.external.google_nbd import GoogleNBD
 from incident_reporting.utils.constants import (
     KEY_REPORTED,
     KEY_REPORTED_DATE,
-    KEY_TYPE,
     LOGGING_FORMAT,
     TYPE_INFORMATION,
     UCPD_DATE_FORMAT,
     UCPD_MDY_DATE_FORMAT,
 )
-from incident_reporting.utils.functions import determine_season
+from incident_reporting.utils.functions import create_seasonal_incident_totals
 
 
 logging.basicConfig(level=logging.INFO, format=LOGGING_FORMAT)
@@ -78,51 +77,20 @@ def hourly_summation(request: Request) -> Response:
 
 @app.get("/incidents/hourly", response_class=JSONResponse)
 def get_hourly_incidents() -> JSONResponse:
-    df, types = client.get_all_incidents()
-
-    fall_hours: {int: {str: int}} = {}
-    spring_hours: {int: {str: int}} = {}
-    summer_hours: {int: {str: int}} = {}
-    winter_hours: {int: {str: int}} = {}
-    for i in range(0, 24):
-        fall_hours[i] = {}
-        spring_hours[i] = {}
-        summer_hours[i] = {}
-        winter_hours[i] = {}
-
-    df_dict = df.to_dicts()
-    for i in range(len(df_dict)):
-        incident = df_dict[i]
-        season = determine_season(df_dict[i][KEY_REPORTED])
-        for t in types:
-            if t in incident[KEY_TYPE]:
-                match season:
-                    case "Fall":
-                        if t in fall_hours[incident[KEY_REPORTED].hour]:
-                            fall_hours[incident[KEY_REPORTED].hour][t] += 1
-                        else:
-                            fall_hours[incident[KEY_REPORTED].hour][t] = 1
-                    case "Spring":
-                        if t in spring_hours[incident[KEY_REPORTED].hour]:
-                            spring_hours[incident[KEY_REPORTED].hour][t] += 1
-                        else:
-                            spring_hours[incident[KEY_REPORTED].hour][t] = 1
-                    case "Summer":
-                        if t in summer_hours[incident[KEY_REPORTED].hour]:
-                            summer_hours[incident[KEY_REPORTED].hour][t] += 1
-                        else:
-                            summer_hours[incident[KEY_REPORTED].hour][t] = 1
-                    case "Winter":
-                        if t in winter_hours[incident[KEY_REPORTED].hour]:
-                            winter_hours[incident[KEY_REPORTED].hour][t] += 1
-                        else:
-                            winter_hours[incident[KEY_REPORTED].hour][t] = 1
+    (
+        fall_hours,
+        spring_hours,
+        summer_hours,
+        total_hours,
+        winter_hours,
+    ) = create_seasonal_incident_totals(**client.get_all_incidents())
 
     return JSONResponse(
         content={
             "fall": fall_hours,
             "spring": spring_hours,
             "summer": summer_hours,
+            "total": total_hours,
             "winter": winter_hours,
         }
     )
