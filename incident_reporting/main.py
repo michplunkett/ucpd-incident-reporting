@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -10,11 +10,13 @@ from incident_reporting.external.google_nbd import GoogleNBD
 from incident_reporting.utils.constants import (
     KEY_REPORTED,
     KEY_REPORTED_DATE,
+    KEY_TYPE,
     LOGGING_FORMAT,
     TYPE_INFORMATION,
     UCPD_DATE_FORMAT,
     UCPD_MDY_DATE_FORMAT,
 )
+from incident_reporting.utils.functions import create_seasonal_incident_totals
 
 
 logging.basicConfig(level=logging.INFO, format=LOGGING_FORMAT)
@@ -34,12 +36,12 @@ client = GoogleNBD()
 
 
 @app.get("/", response_class=HTMLResponse)
-def home(request: Request):
+def home(request: Request) -> Response:
     return templates.TemplateResponse("home.html", {"request": request})
 
 
 @app.get("/thirty_day_map", response_class=HTMLResponse)
-def thirty_day_map(request: Request):
+def thirty_day_map(request: Request) -> Response:
     _, types = client.get_last_30_days_of_incidents(True)
     if TYPE_INFORMATION in types:
         types.remove(TYPE_INFORMATION)
@@ -51,30 +53,70 @@ def thirty_day_map(request: Request):
 
 
 @app.get("/incidents/map", response_class=JSONResponse)
-def get_map_incidents():
+def get_map_incidents() -> JSONResponse:
     df, _ = client.get_last_30_days_of_incidents(True)
 
     # Convert date and datetime objects to strings
     df_dict = df.to_dicts()
     for i in range(len(df_dict)):
-        for key, value in df_dict[i].items():
-            if key == KEY_REPORTED:
-                df_dict[i][KEY_REPORTED] = value.strftime(UCPD_MDY_DATE_FORMAT)
-            elif key == KEY_REPORTED_DATE:
-                df_dict[i][KEY_REPORTED_DATE] = value.strftime(UCPD_DATE_FORMAT)
+        df_dict[i][KEY_REPORTED] = df_dict[i][KEY_REPORTED].strftime(
+            UCPD_MDY_DATE_FORMAT
+        )
+        df_dict[i][KEY_REPORTED_DATE] = df_dict[i][KEY_REPORTED_DATE].strftime(
+            UCPD_DATE_FORMAT
+        )
 
     return JSONResponse(content={"incidents": df_dict})
 
 
 @app.get("/hourly_summation", response_class=HTMLResponse)
-def hourly_summation(request: Request):
+def hourly_summation(request: Request) -> Response:
     return templates.TemplateResponse(
         "hourly_summation.html", {"request": request}
     )
 
 
+@app.get("/incidents/hourly", response_class=JSONResponse)
+def get_hourly_incidents() -> JSONResponse:
+    (
+        fall_hours,
+        spring_hours,
+        summer_hours,
+        total_hours,
+        winter_hours,
+    ) = create_seasonal_incident_totals(*client.get_all_incidents())
+
+    return JSONResponse(
+        content={
+            "fall": fall_hours,
+            "spring": spring_hours,
+            "summer": summer_hours,
+            "total": total_hours,
+            "winter": winter_hours,
+        }
+    )
+
+
 @app.get("/yearly_summation", response_class=HTMLResponse)
-def yearly_summation(request: Request):
+def yearly_summation(request: Request) -> Response:
     return templates.TemplateResponse(
         "yearly_summation.html", {"request": request}
     )
+
+
+@app.get("/incidents/yearly", response_class=JSONResponse)
+def get_yearly_incidents() -> JSONResponse:
+    df, types = client.get_last_year_of_incidents(True)
+
+    type_counts: {str: int} = {}
+    df_dict = df.to_dicts()
+    for i in range(len(df_dict)):
+        incident = df_dict[i]
+        for t in types:
+            if t in incident[KEY_TYPE]:
+                if t in type_counts:
+                    type_counts[t] += 1
+                else:
+                    type_counts[t] = 1
+
+    return JSONResponse(content={"counts": type_counts})

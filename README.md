@@ -16,5 +16,7 @@ This application makes use of scraped incidents from the UCPD Daily Incident Rep
   - Example: `poetry add black`
 
 ## Standard Commands
+- `make`: Runs `create-requirements` and `lint`, respectively.
+- `make create-requirements`: Runs the `Poetry` command that creates an up-to-date `requirements.txt` file.
 - `make lint`: Runs `pre-commit` and creates the `requirements.txt` file
 - `make run`: Starts the `FastAPI` application

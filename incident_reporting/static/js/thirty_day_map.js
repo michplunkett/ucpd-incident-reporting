@@ -75,7 +75,7 @@ async function getMapIncidents() {
 }
 
 function createMap() {
-  map = new google.maps.Map(document.getElementById("incident-map"), {
+  map = new google.maps.Map(document.getElementById("visual-container"), {
     zoom: 14,
     center: new google.maps.LatLng(41.794295, -87.590701),
     mapTypeId: "terrain",

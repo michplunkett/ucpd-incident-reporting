@@ -7,5 +7,15 @@
           src="{{ url_for('static', path='/js/hourly_summation.js') }}"></script>
 {% endblock graphic_script %}
 {% block content %}
-  <div id="graph-container"></div>
+  <div id="category-selection">
+    <label for="incident-type">Select an Incident Type:</label>
+    <select name="incident-type" id="incident-type">
+      <option value="">All Seasons</option>
+      <option value="Spring">Spring</option>
+      <option value="Summer">Summer</option>
+      <option value="Fall">Fall</option>
+      <option value="Winter">Winter</option>
+    </select>
+  </div>
+  <div id="visual-container"></div>
 {% endblock content %}
