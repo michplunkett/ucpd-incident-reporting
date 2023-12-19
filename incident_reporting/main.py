@@ -10,6 +10,7 @@ from incident_reporting.external.google_nbd import GoogleNBD
 from incident_reporting.utils.constants import (
     KEY_REPORTED,
     KEY_REPORTED_DATE,
+    KEY_TYPE,
     LOGGING_FORMAT,
     TYPE_INFORMATION,
     UCPD_DATE_FORMAT,
@@ -101,3 +102,21 @@ def yearly_summation(request: Request) -> Response:
     return templates.TemplateResponse(
         "yearly_summation.html", {"request": request}
     )
+
+
+@app.get("/incidents/yearly", response_class=JSONResponse)
+def get_yearly_incidents() -> JSONResponse:
+    df, types = client.get_last_year_of_incidents(True)
+
+    type_counts: {str: int} = {}
+    df_dict = df.to_dicts()
+    for i in range(len(df_dict)):
+        incident = df_dict[i]
+        for t in types:
+            if t in incident[KEY_TYPE]:
+                if t in type_counts:
+                    type_counts[t] += 1
+                else:
+                    type_counts[t] = 1
+
+    return JSONResponse(content={"counts": type_counts})
