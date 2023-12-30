@@ -90,7 +90,8 @@ function createMap() {
       let content = `
             <div id="content">
               <h3 class="incident-title">${incident.incident}</h3>
-              <p class="incident-information">${incident.validated_address}</p>
+              <p class="incident-information"><b>Predicted Address</b>${incident.validated_address}</p>
+              <p class="incident-information"><b>Listed Address</b>${incident.location}</p>
               <p class="incident-information">${incident.occurred}</p>
               <p class="incident-information"><b>UCPD ID:</b> ${incident.ucpd_id}
             </div>
