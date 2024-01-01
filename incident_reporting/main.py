@@ -119,4 +119,9 @@ def get_yearly_incidents() -> JSONResponse:
                 else:
                     type_counts[t] = 1
 
-    return JSONResponse(content={"counts": type_counts})
+    type_counts_list = [
+        (k, type_counts[k])
+        for k in sorted(type_counts, key=type_counts.get, reverse=True)
+    ]
+
+    return JSONResponse(content={"counts": type_counts_list})
