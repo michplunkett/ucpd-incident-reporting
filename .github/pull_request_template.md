@@ -8,9 +8,6 @@ https://success.vanillaforums.com/kb/articles/228-using-pull-requests-to-contrib
 ## Describe your changes
 
 
-## Non-obvious technical information
-
-
 ## Checklist before requesting a review
 - [ ] The code runs successfully.
 
