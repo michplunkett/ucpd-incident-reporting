@@ -2,7 +2,11 @@ from datetime import datetime
 
 import polars as pl
 
-from incident_reporting.utils.constants import KEY_REPORTED, KEY_TYPE
+from incident_reporting.utils.constants import (
+    KEY_REPORTED,
+    KEY_TYPE,
+    TYPE_INFORMATION,
+)
 
 
 def create_or_increment_type(
@@ -24,6 +28,8 @@ def create_seasonal_incident_totals(
     {int: {str: int}},
     {int: {str: int}},
 ):
+    types.remove(TYPE_INFORMATION)
+
     fall_hours: {int: {str: int}} = {}
     spring_hours: {int: {str: int}} = {}
     summer_hours: {int: {str: int}} = {}
