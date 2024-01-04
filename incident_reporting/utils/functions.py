@@ -41,7 +41,7 @@ def create_seasonal_incident_totals(
         incident = df_dict[i]
         season = determine_season(df_dict[i][KEY_REPORTED])
         for t in types:
-            if t in incident[KEY_TYPE]:
+            if t in incident[KEY_TYPE].split(" / "):
                 create_or_increment_type(total_hours, t, incident[KEY_REPORTED])
                 match season:
                     case "Fall":
