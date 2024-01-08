@@ -2,7 +2,11 @@ from datetime import datetime
 
 import polars as pl
 
-from incident_reporting.utils.constants import KEY_REPORTED, KEY_TYPE
+from incident_reporting.utils.constants import (
+    KEY_REPORTED,
+    KEY_TYPE,
+    TYPE_INFORMATION,
+)
 
 
 def create_or_increment_type(
@@ -14,16 +18,39 @@ def create_or_increment_type(
         hour_dict[reported_dt.hour][i_type] = 1
 
 
+def determine_season(test_date: datetime) -> str:
+    test_date_tuple = (test_date.month, test_date.day)
+    if (3, 1) <= test_date_tuple < (5, 31):
+        return "Spring"
+    elif (6, 1) <= test_date_tuple < (8, 31):
+        return "Summer"
+    elif (9, 1) <= test_date_tuple < (12, 1):
+        return "Fall"
+    else:
+        return "Winter"
+
+
+def type_counts_to_sorted_list(
+    d: {int: {str: int}},
+) -> {int: [tuple[str, int]]}:
+    for k in d.keys():
+        type_counts = [(sub_k, d[k][sub_k]) for sub_k in d[k].keys()]
+        d[k] = sorted(type_counts, key=lambda tc: tc[1], reverse=True)
+    return d
+
+
 def create_seasonal_incident_totals(
     df: pl.DataFrame,
     types: [str],
 ) -> (
-    {int: {str: int}},
-    {int: {str: int}},
-    {int: {str: int}},
-    {int: {str: int}},
-    {int: {str: int}},
+    {int: [tuple[str, int]]},
+    {int: [tuple[str, int]]},
+    {int: [tuple[str, int]]},
+    {int: [tuple[str, int]]},
+    {int: [tuple[str, int]]},
 ):
+    types.remove(TYPE_INFORMATION)
+
     fall_hours: {int: {str: int}} = {}
     spring_hours: {int: {str: int}} = {}
     summer_hours: {int: {str: int}} = {}
@@ -41,7 +68,7 @@ def create_seasonal_incident_totals(
         incident = df_dict[i]
         season = determine_season(df_dict[i][KEY_REPORTED])
         for t in types:
-            if t in incident[KEY_TYPE]:
+            if t in incident[KEY_TYPE].split(" / "):
                 create_or_increment_type(total_hours, t, incident[KEY_REPORTED])
                 match season:
                     case "Fall":
@@ -61,16 +88,10 @@ def create_seasonal_incident_totals(
                             winter_hours, t, incident[KEY_REPORTED]
                         )
 
-    return fall_hours, spring_hours, summer_hours, total_hours, winter_hours
-
-
-def determine_season(test_date: datetime) -> str:
-    test_date_tuple = (test_date.month, test_date.day)
-    if (3, 1) <= test_date_tuple < (5, 31):
-        return "Spring"
-    elif (6, 1) <= test_date_tuple < (8, 31):
-        return "Summer"
-    elif (9, 1) <= test_date_tuple < (12, 1):
-        return "Fall"
-    else:
-        return "Winter"
+    return (
+        type_counts_to_sorted_list(fall_hours),
+        type_counts_to_sorted_list(spring_hours),
+        type_counts_to_sorted_list(summer_hours),
+        type_counts_to_sorted_list(total_hours),
+        type_counts_to_sorted_list(winter_hours),
+    )

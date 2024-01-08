@@ -76,13 +76,16 @@
 }
 
 #category-selection {
-    height: 50px;
     padding-left: 20px;
     padding-top: 10px;
 }
 
 #category-selection * {
     display: inline;
+}
+
+#category-selection #incident-type {
+    margin-bottom: 10px;
 }
 
 #visual-container {
