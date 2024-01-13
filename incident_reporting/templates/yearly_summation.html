@@ -7,5 +7,7 @@
           src="{{ url_for('static', path='/js/yearly_summation.js') }}"></script>
 {% endblock graphic_script %}
 {% block content %}
-  <div id="visual-container"></div>
+  <div id="visual-container">
+    <canvas id="canvas-visual"></canvas>
+  </div>
 {% endblock content %}
