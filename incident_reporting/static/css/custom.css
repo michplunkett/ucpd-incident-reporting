@@ -89,7 +89,8 @@
 }
 
 #visual-container {
-    height: calc(100% - 50px);
+    height: calc(100% - 70px);
+    padding-bottom: 15px;
 }
 
 .incident-title {
