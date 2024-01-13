@@ -1,13 +1,12 @@
-const dimension = 928;
-const innerRadius = 180;
-const outerRadius = Math.min(dimension, dimension) / 2;
-const hourlySummation = d3.select("#visual-container").append("svg");
+const hours = [];
+let selectedSeason = [];
+for (let hour = 0; hour < 10; hour++) hours.push(hour);
 
-let fallSummary = {};
-let springSummary = {};
-let summerSummary = {};
-let totalSummary = {};
-let winterSummary = {};
+let fallSummary = [];
+let springSummary = [];
+let summerSummary = [];
+let totalSummary = [];
+let winterSummary = [];
 
 async function getIncidents() {
   const response = await fetch("/incidents/hourly");
@@ -21,8 +20,36 @@ getIncidents().then((r) => {
   totalSummary = r["total"];
   winterSummary = r["winter"];
 
-  console.log(fallSummary);
-  console.log(springSummary);
-  console.log(summerSummary);
-  console.log(winterSummary);
+  function createVisual() {
+    new Chart(document.getElementById("canvas-visual"), {
+      type: "bar",
+      data: {
+        labels: hours,
+        datasets: [
+          {
+            data: [86, 114, 106, 106, 107, 111, 133, 221, 783, 2478],
+            label: "Africa",
+            borderColor: "#3e95cd",
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: {
+            align: "center",
+            display: true,
+            font: {
+              size: 26,
+            },
+            position: "top",
+            text: "Incident Types per Hour of the Day",
+          },
+        },
+      },
+    });
+  }
+
+  createVisual();
 });
