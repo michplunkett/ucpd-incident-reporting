@@ -21,32 +21,27 @@ getIncidents().then((r) => {
   winterSummary = r["winter"];
 
   function createVisual() {
-    new Chart(document.getElementById("canvas-visual"), {
-      type: "bar",
+    Highcharts.chart("visual-container", {
       data: {
-        labels: hours,
-        datasets: [
-          {
-            data: [86, 114, 106, 106, 107, 111, 133, 221, 783, 2478],
-            label: "Africa",
-            borderColor: "#3e95cd",
-          },
-        ],
+        table: "freq",
+        startRow: 1,
+        endRow: 17,
+        endColumn: 7,
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          title: {
-            align: "center",
-            display: true,
-            font: {
-              size: 26,
-            },
-            position: "top",
-            text: "Incident Types per Hour of the Day",
-          },
-        },
+
+      chart: {
+        polar: true,
+        type: "column",
+      },
+
+      title: {
+        text: "UCPD Incident Type Sums per Hour of the Day",
+        align: "center",
+      },
+
+      subtitle: {
+        text: "Based on Data From 2011 to the Most Recent Completed Year",
+        align: "center",
       },
     });
   }
