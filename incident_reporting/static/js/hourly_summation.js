@@ -39,7 +39,7 @@ getIncidents().then((r) => {
       align: "center",
     },
     subtitle: {
-      text: "Based on Data From 2011 to the Most Recent Completed Year",
+      text: "Based on data from 2011 to the most recently completed year",
       align: "center",
     },
     accessibility: {
