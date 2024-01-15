@@ -99,8 +99,8 @@ def create_seasonal_incident_totals(
 
 def create_hour_and_breakdown_counts(
     season_count: {int: [tuple[str, int]]}, is_total: bool = False
-) -> ([dict], {int: [dict]}):
-    breakdown_counts: {int: [dict]} = {}
+) -> ([dict], [dict]):
+    breakdown_counts: [dict] = []
     hour_counts: [dict] = []
     # If we are looking at all seasons, we want to raise the threshold.
     incident_threshold = 20 if is_total else 5
@@ -108,17 +108,18 @@ def create_hour_and_breakdown_counts(
     for i in range(24):
         total_incidents = 0
         other_incidents = 0
-        breakdown_counts[i] = []
+        breakdown_obj = {"id": i, "name": i, "data": []}
         for tc in season_count[i]:
             _, i_count = tc
             total_incidents += i_count
             # Only incident counts >= the threshold get individually added to
             # the breakdown, all others get grouped as 'Other'.
             if i_count >= incident_threshold:
-                breakdown_counts[i].append(tc)
+                breakdown_obj["data"].append(tc)
             else:
                 other_incidents += i_count
-        breakdown_counts[i].append(("Other", other_incidents))
+        breakdown_obj["data"].append(("Other", other_incidents))
+        breakdown_counts.append(breakdown_obj)
         hour_counts.append({"name": i, "y": total_incidents, "drilldown": i})
 
     return hour_counts, breakdown_counts
