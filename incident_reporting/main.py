@@ -83,6 +83,8 @@ def hourly_summation(request: Request) -> Response:
 
 @app.get("/incidents/hourly", response_class=JSONResponse)
 def get_hourly_incidents() -> JSONResponse:
+    # There's likely a more efficient way to do this, but I'm in a bit of a
+    # rush. Here's hoping I address it later on.
     # Create incident type totals by hour per season.
     (
         fall_hours,
