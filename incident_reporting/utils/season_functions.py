@@ -108,7 +108,8 @@ def create_hour_and_breakdown_counts(
     for i in range(24):
         total_incidents = 0
         other_incidents = 0
-        breakdown_obj = {"id": i, "name": i, "data": []}
+        key = f"{i}:00"
+        breakdown_obj = {"name": key, "id": key, "data": []}
         for tc in season_count[i]:
             _, i_count = tc
             total_incidents += i_count
@@ -120,6 +121,8 @@ def create_hour_and_breakdown_counts(
                 other_incidents += i_count
         breakdown_obj["data"].append(("Other", other_incidents))
         breakdown_counts.append(breakdown_obj)
-        hour_counts.append({"name": i, "y": total_incidents, "drilldown": i})
+        hour_counts.append(
+            {"name": key, "y": total_incidents, "drilldown": key}
+        )
 
     return hour_counts, breakdown_counts
