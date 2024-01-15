@@ -1,6 +1,4 @@
 let chart;
-const hours = [];
-for (let hour = 0; hour < 24; hour++) hours.push(hour);
 
 let fallHours = [];
 let fallHourBreakdown = [];
@@ -12,6 +10,9 @@ let totalHours = [];
 let totalHourBreakdown = [];
 let winterHours = [];
 let winterHourBreakdown = [];
+
+let selectedHours = [];
+let selectedHoursBreakdown = [];
 
 async function getIncidents() {
   const response = await fetch("/incidents/hourly");
@@ -30,17 +31,23 @@ getIncidents().then((r) => {
   winterHours = r["winter_hour_counts"];
   winterHourBreakdown = r["winter_breakdown_counts"];
 
+  selectedHours = totalHours;
+  selectedHoursBreakdown = totalHourBreakdown;
+
   chart = Highcharts.chart("visual-container", {
     colors: ["#800000"],
     chart: {
       type: "column",
     },
+    lang: {
+      thousandsSep: ",",
+    },
     title: {
-      text: "UCPD Incident Type Sums per Hour of the Day",
+      text: "Frequency of Criminal Incidents Reported to UCPD by Hour",
       align: "center",
     },
     subtitle: {
-      text: "Click the hour to see incident type breakdown",
+      text: "Click the hour to see a breakdown by incident type",
       align: "center",
     },
     accessibility: {
@@ -57,11 +64,21 @@ getIncidents().then((r) => {
         dataLabels: {
           enabled: false,
         },
+        events: {
+          click: function (e) {
+            if (e.point.drilldown) {
+              chart.addSeriesAsDrilldown(
+                e.point,
+                selectedHoursBreakdown[e.point.index],
+              );
+            }
+          },
+        },
       },
     },
     tooltip: {
       headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-      pointFormat: "{point.name}: <b>{point.y}</b> Incidents<br/>",
+      pointFormat: "{point.name}: <b>{point.y:.f}</b> Incidents<br/>",
     },
     xAxis: {
       type: "category",
@@ -75,7 +92,7 @@ getIncidents().then((r) => {
       {
         name: "Hour of Day",
         colorByPoint: true,
-        data: totalHours,
+        data: selectedHours,
       },
     ],
     drilldown: {
@@ -84,7 +101,33 @@ getIncidents().then((r) => {
           align: "right",
         },
       },
-      series: totalHourBreakdown,
     },
   });
+
+  document
+    .getElementById("season-select")
+    .addEventListener("change", (event) => {
+      const selectSeason = event.target.value;
+      if (selectSeason === "Fall") {
+        selectedHours = fallHours;
+        selectedHoursBreakdown = fallHourBreakdown;
+      } else if (selectSeason === "Spring") {
+        selectedHours = springHours;
+        selectedHoursBreakdown = springHourBreakdown;
+      } else if (selectSeason === "Summer") {
+        selectedHours = summerHours;
+        selectedHoursBreakdown = summerHourBreakdown;
+      } else if (selectSeason === "Winter") {
+        selectedHours = winterHours;
+        selectedHoursBreakdown = winterHourBreakdown;
+      } else if (selectSeason === "Total") {
+        selectedHours = totalHours;
+        selectedHoursBreakdown = totalHourBreakdown;
+      }
+
+      chart.drillUp();
+      // This is a hack to make sure I can set to totalHours.
+      chart.series[0].setData([]);
+      chart.series[0].setData(selectedHours);
+    });
 });
