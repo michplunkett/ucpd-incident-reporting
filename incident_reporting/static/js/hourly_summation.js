@@ -1,7 +1,6 @@
-const dimension = 928;
-const innerRadius = 180;
-const outerRadius = Math.min(dimension, dimension) / 2;
-const hourlySummation = d3.select("#visual-container").append("svg");
+const hours = [];
+let selectedSeason = [];
+for (let hour = 0; hour < 24; hour++) hours.push(hour);
 
 let fallSummary = {};
 let springSummary = {};
@@ -21,8 +20,39 @@ getIncidents().then((r) => {
   totalSummary = r["total"];
   winterSummary = r["winter"];
 
-  console.log(fallSummary);
-  console.log(springSummary);
-  console.log(summerSummary);
-  console.log(winterSummary);
+  function createVisual() {
+    Highcharts.chart("visual-container", {
+      data: {
+        table: "freq",
+        startRow: 1,
+        endRow: 17,
+        endColumn: 7,
+      },
+
+      chart: {
+        polar: true,
+        type: "column",
+      },
+
+      title: {
+        text: "UCPD Incident Type Sums per Hour of the Day",
+        align: "center",
+      },
+
+      subtitle: {
+        text: "Based on Data From 2011 to the Most Recent Completed Year",
+        align: "center",
+      },
+
+      pane: {
+        size: "90%",
+      },
+
+      xAxis: {
+        categories: hours,
+      },
+    });
+  }
+
+  createVisual();
 });

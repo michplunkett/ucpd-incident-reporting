@@ -8,6 +8,7 @@ from fastapi.templating import Jinja2Templates
 
 from incident_reporting.external.google_nbd import GoogleNBD
 from incident_reporting.utils.constants import (
+    KEY_COMMENTS,
     KEY_REPORTED,
     KEY_REPORTED_DATE,
     KEY_TYPE,
@@ -65,6 +66,7 @@ def get_map_incidents() -> JSONResponse:
         df_dict[i][KEY_REPORTED_DATE] = df_dict[i][KEY_REPORTED_DATE].strftime(
             UCPD_DATE_FORMAT
         )
+        del df_dict[i][KEY_COMMENTS]
 
     return JSONResponse(content={"incidents": df_dict})
 
@@ -119,9 +121,17 @@ def get_yearly_incidents() -> JSONResponse:
                 else:
                     type_counts[t] = 1
 
+    # Since there are a LARGE number of incident types, I want to limit it to
+    # types that have a frequency higher than 20 and aren't 'Information'.
     type_counts_list = [
         (k, type_counts[k])
         for k in sorted(type_counts, key=type_counts.get, reverse=True)
+        if type_counts[k] > 20 and k != TYPE_INFORMATION
     ]
 
-    return JSONResponse(content={"counts": type_counts_list})
+    return JSONResponse(
+        content={
+            "counts": [tc[1] for tc in type_counts_list],
+            "types": [tc[0] for tc in type_counts_list],
+        }
+    )
