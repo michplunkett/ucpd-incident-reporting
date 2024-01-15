@@ -103,7 +103,7 @@ def create_hour_and_breakdown_counts(
     breakdown_counts: [dict] = []
     hour_counts: [dict] = []
     # If we are looking at all seasons, we want to raise the threshold.
-    incident_threshold = 20 if is_total else 5
+    incident_threshold = 20 if is_total else 4
 
     for i in range(24):
         total_incidents = 0
