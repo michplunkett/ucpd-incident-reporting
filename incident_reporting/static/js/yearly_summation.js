@@ -32,13 +32,12 @@ getIncidents().then((r) => {
     yAxis: {
       min: 0,
       title: {
-        text: "Category Frequency",
+        text: "Frequency",
       },
     },
     plotOptions: {
       column: {
         pointPadding: 0.2,
-        borderWidth: 0,
       },
     },
     legend: {
