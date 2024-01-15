@@ -129,7 +129,9 @@ def get_yearly_incidents() -> JSONResponse:
         if type_counts[k] > 20 and k != TYPE_INFORMATION
     ]
 
-    types = [tc[0] for tc in type_counts_list]
-    counts = [tc[1] for tc in type_counts_list]
-
-    return JSONResponse(content={"counts": counts, "types": types})
+    return JSONResponse(
+        content={
+            "counts": [tc[1] for tc in type_counts_list],
+            "types": [tc[0] for tc in type_counts_list],
+        }
+    )
