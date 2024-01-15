@@ -10,7 +10,7 @@
 {% block content %}
   <div id="category-selection">
     <label for="incident-type">Select an Incident Type:</label>
-    <select name="incident-type" id="incident-type">
+    <select class="visual-select" name="incident-type" id="incident-type">
       <option value="">All Incidents</option>
       {% for t in types %}<option value="{{ t }}">{{ t }}</option>{% endfor %}
     </select>
