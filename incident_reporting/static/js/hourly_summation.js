@@ -126,7 +126,8 @@ getIncidents().then((r) => {
       }
 
       chart.drillUp();
-      // This is a hack to make sure I can set to totalHours.
+      // TODO: Setting the data to empty is a hack that allows me to
+      //  reset the drilldown.
       chart.series[0].setData([]);
       chart.series[0].setData(selectedHours);
     });
