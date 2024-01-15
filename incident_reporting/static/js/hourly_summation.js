@@ -1,12 +1,12 @@
 const hours = [];
 let selectedSeason = [];
-for (let hour = 0; hour < 10; hour++) hours.push(hour);
+for (let hour = 0; hour < 24; hour++) hours.push(hour);
 
-let fallSummary = [];
-let springSummary = [];
-let summerSummary = [];
-let totalSummary = [];
-let winterSummary = [];
+let fallSummary = {};
+let springSummary = {};
+let summerSummary = {};
+let totalSummary = {};
+let winterSummary = {};
 
 async function getIncidents() {
   const response = await fetch("/incidents/hourly");
@@ -43,6 +43,11 @@ getIncidents().then((r) => {
         text: "Based on Data From 2011 to the Most Recent Completed Year",
         align: "center",
       },
+
+      pane: {
+          size: '90%'
+      },
+
     });
   }
 
