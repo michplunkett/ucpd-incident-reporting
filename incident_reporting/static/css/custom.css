@@ -84,7 +84,7 @@
     display: inline;
 }
 
-#category-selection #incident-type {
+#category-selection .visual-select {
     margin-bottom: 10px;
 }
 

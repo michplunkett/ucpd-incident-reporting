@@ -15,8 +15,9 @@
         A map of incidents that took place over the last 30 days: <a href='{{ url_for("thirty_day_map") }}'>Link</a>
       </li>
       <li>
-        A radial stacked bar chart showing the average amount of incidents that take place at a given hour per season
-        based on data from 2011 to the most recently completed year: <a href='{{ url_for("hourly_summation") }}'>Link</a>
+        A drilldown bar chart that allows you to see the type of events that happen at a given hour in a given season
+        based off of data from 2011 to the most recently completed
+        year: <a href='{{ url_for("hourly_summation") }}'>Link</a>
       </li>
       <li>
         A bar chart showing all incident types that have more than 20 occurrences within the last

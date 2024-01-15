@@ -17,14 +17,14 @@ getIncidents().then((r) => {
       align: "center",
     },
     subtitle: {
-      text: "Incident Types With at Least 20 Occurrences",
+      text: "Incident types with at least 20 occurrences",
       align: "center",
     },
     xAxis: {
       categories: types,
       crosshair: true,
       accessibility: {
-        description: "Countries",
+        description: "Incident Types",
       },
     },
     yAxis: {

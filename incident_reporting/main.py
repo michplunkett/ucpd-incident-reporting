@@ -17,7 +17,10 @@ from incident_reporting.utils.constants import (
     UCPD_DATE_FORMAT,
     UCPD_MDY_DATE_FORMAT,
 )
-from incident_reporting.utils.functions import create_seasonal_incident_totals
+from incident_reporting.utils.season_functions import (
+    create_hour_and_breakdown_counts,
+    create_seasonal_incident_totals,
+)
 
 
 logging.basicConfig(level=logging.INFO, format=LOGGING_FORMAT)
@@ -80,6 +83,9 @@ def hourly_summation(request: Request) -> Response:
 
 @app.get("/incidents/hourly", response_class=JSONResponse)
 def get_hourly_incidents() -> JSONResponse:
+    # There's likely a more efficient way to do this, but I'm in a bit of a
+    # rush. Here's hoping I address it later on.
+    # Create incident type totals by hour per season.
     (
         fall_hours,
         spring_hours,
@@ -88,13 +94,39 @@ def get_hourly_incidents() -> JSONResponse:
         winter_hours,
     ) = create_seasonal_incident_totals(*client.get_all_incidents())
 
+    # Break those totals down to counts by hour and breakdowns per hour.
+    fall_hour_counts, fall_breakdown_counts = create_hour_and_breakdown_counts(
+        fall_hours
+    )
+    (
+        spring_hour_counts,
+        spring_breakdown_counts,
+    ) = create_hour_and_breakdown_counts(spring_hours)
+    (
+        summer_hour_counts,
+        summer_breakdown_counts,
+    ) = create_hour_and_breakdown_counts(summer_hours)
+    (
+        total_hour_counts,
+        total_breakdown_counts,
+    ) = create_hour_and_breakdown_counts(total_hours, True)
+    (
+        winter_hour_counts,
+        winter_breakdown_counts,
+    ) = create_hour_and_breakdown_counts(winter_hours)
+
     return JSONResponse(
         content={
-            "fall": fall_hours,
-            "spring": spring_hours,
-            "summer": summer_hours,
-            "total": total_hours,
-            "winter": winter_hours,
+            "fall_hour_counts": fall_hour_counts,
+            "fall_breakdown_counts": fall_breakdown_counts,
+            "spring_hour_counts": spring_hour_counts,
+            "spring_breakdown_counts": spring_breakdown_counts,
+            "summer_hour_counts": summer_hour_counts,
+            "summer_breakdown_counts": summer_breakdown_counts,
+            "total_hour_counts": total_hour_counts,
+            "total_breakdown_counts": total_breakdown_counts,
+            "winter_hour_counts": winter_hour_counts,
+            "winter_breakdown_counts": winter_breakdown_counts,
         }
     )
 

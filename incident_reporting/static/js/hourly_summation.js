@@ -1,12 +1,18 @@
-const hours = [];
-let selectedSeason = [];
-for (let hour = 0; hour < 24; hour++) hours.push(hour);
+let chart;
 
-let fallSummary = {};
-let springSummary = {};
-let summerSummary = {};
-let totalSummary = {};
-let winterSummary = {};
+let fallHours = [];
+let fallHourBreakdown = [];
+let springHours = [];
+let springHourBreakdown = [];
+let summerHours = [];
+let summerHourBreakdown = [];
+let totalHours = [];
+let totalHourBreakdown = [];
+let winterHours = [];
+let winterHourBreakdown = [];
+
+let selectedHours = [];
+let selectedHoursBreakdown = [];
 
 async function getIncidents() {
   const response = await fetch("/incidents/hourly");
@@ -14,45 +20,115 @@ async function getIncidents() {
 }
 
 getIncidents().then((r) => {
-  fallSummary = r["fall"];
-  springSummary = r["spring"];
-  summerSummary = r["summer"];
-  totalSummary = r["total"];
-  winterSummary = r["winter"];
+  fallHours = r["fall_hour_counts"];
+  fallHourBreakdown = r["fall_breakdown_counts"];
+  springHours = r["spring_hour_counts"];
+  springHourBreakdown = r["spring_breakdown_counts"];
+  summerHours = r["summer_hour_counts"];
+  summerHourBreakdown = r["summer_breakdown_counts"];
+  totalHours = r["total_hour_counts"];
+  totalHourBreakdown = r["total_breakdown_counts"];
+  winterHours = r["winter_hour_counts"];
+  winterHourBreakdown = r["winter_breakdown_counts"];
 
-  function createVisual() {
-    Highcharts.chart("visual-container", {
-      data: {
-        table: "freq",
-        startRow: 1,
-        endRow: 17,
-        endColumn: 7,
+  selectedHours = totalHours;
+  selectedHoursBreakdown = totalHourBreakdown;
+
+  chart = Highcharts.chart("visual-container", {
+    colors: ["#800000"],
+    chart: {
+      type: "column",
+    },
+    lang: {
+      thousandsSep: ",",
+    },
+    title: {
+      text: "Frequency of Criminal Incidents Reported to UCPD by Hour",
+      align: "center",
+    },
+    subtitle: {
+      text: "Click the hour to see a breakdown by incident type",
+      align: "center",
+    },
+    accessibility: {
+      announceNewData: {
+        enabled: true,
       },
-
-      chart: {
-        polar: true,
-        type: "column",
+    },
+    legend: {
+      enabled: false,
+    },
+    plotOptions: {
+      series: {
+        borderWidth: 0,
+        dataLabels: {
+          enabled: false,
+        },
+        events: {
+          click: function (e) {
+            if (e.point.drilldown) {
+              chart.addSeriesAsDrilldown(
+                e.point,
+                selectedHoursBreakdown[e.point.index],
+              );
+            }
+          },
+        },
       },
-
+    },
+    tooltip: {
+      headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+      pointFormat: "{point.name}: <b>{point.y:.f}</b> Incidents<br/>",
+    },
+    xAxis: {
+      type: "category",
+    },
+    yAxis: {
       title: {
-        text: "UCPD Incident Type Sums per Hour of the Day",
-        align: "center",
+        text: "Frequency of Incident Type(s)",
       },
+    },
+    series: [
+      {
+        name: "Hour of Day",
+        colorByPoint: true,
+        data: selectedHours,
+      },
+    ],
+    drilldown: {
+      breadcrumbs: {
+        position: {
+          align: "right",
+        },
+      },
+    },
+  });
 
-      subtitle: {
-        text: "Based on Data From 2011 to the Most Recent Completed Year",
-        align: "center",
-      },
+  document
+    .getElementById("season-select")
+    .addEventListener("change", (event) => {
+      const selectSeason = event.target.value;
+      if (selectSeason === "Fall") {
+        selectedHours = fallHours;
+        selectedHoursBreakdown = fallHourBreakdown;
+      } else if (selectSeason === "Spring") {
+        selectedHours = springHours;
+        selectedHoursBreakdown = springHourBreakdown;
+      } else if (selectSeason === "Summer") {
+        selectedHours = summerHours;
+        selectedHoursBreakdown = summerHourBreakdown;
+      } else if (selectSeason === "Winter") {
+        selectedHours = winterHours;
+        selectedHoursBreakdown = winterHourBreakdown;
+      } else if (selectSeason === "Total") {
+        selectedHours = totalHours;
+        selectedHoursBreakdown = totalHourBreakdown;
+      }
 
-      pane: {
-        size: "90%",
-      },
-
-      xAxis: {
-        categories: hours,
-      },
+      chart.drillUp();
+      // TODO: Setting the data to empty is a hack that allows me to
+      //  reset the drilldown.
+      chart.series[0].setData([]);
+      chart.series[0].setData(selectedHours);
     });
-  }
-
-  createVisual();
 });
