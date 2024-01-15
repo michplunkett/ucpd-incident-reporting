@@ -39,27 +39,16 @@ def type_counts_to_sorted_list(
     return d
 
 
-def type_counts_by_hour_to_list(
-    hour_type_counts: {int: [tuple[str, int]]}
-) -> [dict]:
-    type_count_list: [dict] = []
-    for i in range(24):
-        for val in hour_type_counts[i]:
-            type_count_list.append(
-                {
-                    "hour": i,
-                    "i_type": val[0],
-                    "count": val[1],
-                }
-            )
-
-    return type_count_list
-
-
 def create_seasonal_incident_totals(
     df: pl.DataFrame,
     types: [str],
-) -> ([dict], [dict], [dict], [dict], [dict],):
+) -> (
+    {int: [tuple[str, int]]},
+    {int: [tuple[str, int]]},
+    {int: [tuple[str, int]]},
+    {int: [tuple[str, int]]},
+    {int: [tuple[str, int]]},
+):
     types.remove(TYPE_INFORMATION)
 
     fall_hours: {int: {str: int}} = {}
@@ -99,26 +88,10 @@ def create_seasonal_incident_totals(
                             winter_hours, t, incident[KEY_REPORTED]
                         )
 
-    sorted_fall: {int: [tuple[str, int]]} = type_counts_to_sorted_list(
-        fall_hours
-    )
-    sorted_spring: {int: [tuple[str, int]]} = type_counts_to_sorted_list(
-        spring_hours
-    )
-    sorted_summer: {int: [tuple[str, int]]} = type_counts_to_sorted_list(
-        summer_hours
-    )
-    sorted_total: {int: [tuple[str, int]]} = type_counts_to_sorted_list(
-        total_hours
-    )
-    sorted_winter: {int: [tuple[str, int]]} = type_counts_to_sorted_list(
-        winter_hours
-    )
-
     return (
-        type_counts_by_hour_to_list(sorted_fall),
-        type_counts_by_hour_to_list(sorted_spring),
-        type_counts_by_hour_to_list(sorted_summer),
-        type_counts_by_hour_to_list(sorted_total),
-        type_counts_by_hour_to_list(sorted_winter),
+        type_counts_to_sorted_list(fall_hours),
+        type_counts_to_sorted_list(spring_hours),
+        type_counts_to_sorted_list(summer_hours),
+        type_counts_to_sorted_list(total_hours),
+        type_counts_to_sorted_list(winter_hours),
     )
