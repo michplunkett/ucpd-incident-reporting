@@ -17,7 +17,7 @@ getIncidents().then((r) => {
       align: "center",
     },
     subtitle: {
-      text: "This Graphic Pulls From the Last 365 Days",
+      text: "Incident Types With at Least 20 Occurrences",
       align: "center",
     },
     xAxis: {
@@ -25,9 +25,6 @@ getIncidents().then((r) => {
       crosshair: true,
       accessibility: {
         description: "Countries",
-      },
-      title: {
-        text: "Incident types with at least 20 occurrences",
       },
     },
     yAxis: {
