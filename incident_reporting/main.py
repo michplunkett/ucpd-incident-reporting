@@ -107,7 +107,7 @@ def get_hourly_incidents() -> JSONResponse:
     (
         total_hour_counts,
         total_breakdown_counts,
-    ) = create_hour_and_breakdown_counts(total_hours)
+    ) = create_hour_and_breakdown_counts(total_hours, True)
     (
         winter_hour_counts,
         winter_breakdown_counts,
