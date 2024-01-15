@@ -31,6 +31,7 @@ getIncidents().then((r) => {
   winterHourBreakdown = r["winter_breakdown_counts"];
 
   chart = Highcharts.chart("visual-container", {
+    colors: ["#800000"],
     chart: {
       type: "column",
     },
@@ -39,7 +40,7 @@ getIncidents().then((r) => {
       align: "center",
     },
     subtitle: {
-      text: "Based on data from 2011 to the most recently completed year",
+      text: "Click the hour to see incident type breakdown",
       align: "center",
     },
     accessibility: {
@@ -60,12 +61,10 @@ getIncidents().then((r) => {
     },
     tooltip: {
       headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-      pointFormat:
-        '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}%</b> of total<br/>',
+      pointFormat: "{point.name}: <b>{point.y}</b> Incidents<br/>",
     },
     xAxis: {
       type: "category",
-      categories: hours,
     },
     yAxis: {
       title: {
@@ -76,7 +75,7 @@ getIncidents().then((r) => {
       {
         name: "Hour of Day",
         colorByPoint: true,
-        data: [],
+        data: totalHours,
       },
     ],
     drilldown: {
@@ -85,7 +84,7 @@ getIncidents().then((r) => {
           align: "right",
         },
       },
-      series: {},
+      series: totalHourBreakdown,
     },
   });
 });
