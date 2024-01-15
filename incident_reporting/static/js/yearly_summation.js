@@ -9,7 +9,8 @@ getIncidents().then((r) => {
   types = r["types"];
   counts = r["counts"];
 
-  Highcharts.chart("container", {
+  Highcharts.chart("visual-container", {
+    colors: ["#800000"],
     chart: {
       type: "column",
     },
@@ -31,11 +32,8 @@ getIncidents().then((r) => {
     yAxis: {
       min: 0,
       title: {
-        text: "1000 metric tons (MT)",
+        text: "Category Frequency",
       },
-    },
-    tooltip: {
-      valueSuffix: " (1000 MT)",
     },
     plotOptions: {
       column: {
@@ -43,14 +41,13 @@ getIncidents().then((r) => {
         borderWidth: 0,
       },
     },
+    legend: {
+      enabled: false,
+    },
     series: [
       {
-        name: "Corn",
-        data: [406292, 260000, 107000, 68300, 27500, 14500],
-      },
-      {
-        name: "Wheat",
-        data: [51086, 136000, 5500, 141000, 107180, 77000],
+        name: "Incidents",
+        data: counts,
       },
     ],
   });
