@@ -1,13 +1,11 @@
-let counts, types;
-
 async function getIncidents() {
   const response = await fetch("/incidents/yearly");
   return response.json();
 }
 
 getIncidents().then((r) => {
-  types = r["types"];
-  counts = r["counts"];
+  const counts = r["counts"];
+  const types = r["types"];
 
   Highcharts.chart("visual-container", {
     colors: ["#800000"],
