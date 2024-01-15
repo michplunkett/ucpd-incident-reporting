@@ -121,6 +121,4 @@ def create_hour_and_breakdown_counts(
         breakdown_counts[i].append(("Other", other_incidents))
         hour_counts.append({"name": i, "y": total_incidents, "drilldown": i})
 
-    print(breakdown_counts)
-    print(hour_counts)
     return hour_counts, breakdown_counts
