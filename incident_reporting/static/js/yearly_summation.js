@@ -26,6 +26,9 @@ getIncidents().then((r) => {
       accessibility: {
         description: "Countries",
       },
+      title: {
+        text: "Incident types with at least 20 occurrences",
+      },
     },
     yAxis: {
       min: 0,
