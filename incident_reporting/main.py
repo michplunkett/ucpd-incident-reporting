@@ -121,6 +121,8 @@ def get_yearly_incidents() -> JSONResponse:
                 else:
                     type_counts[t] = 1
 
+    # Since there are a LARGE number of incident types, I want to limit it to
+    # types that have a frequency higher than 20 and aren't 'Information'.
     type_counts_list = [
         (k, type_counts[k])
         for k in sorted(type_counts, key=type_counts.get, reverse=True)
