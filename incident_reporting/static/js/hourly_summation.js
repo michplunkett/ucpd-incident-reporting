@@ -47,6 +47,10 @@ getIncidents().then((r) => {
       pane: {
         size: "90%",
       },
+
+      xAxis: {
+        categories: hours,
+      },
     });
   }
 
