@@ -45,9 +45,8 @@ getIncidents().then((r) => {
       },
 
       pane: {
-          size: '90%'
+        size: "90%",
       },
-
     });
   }
 
