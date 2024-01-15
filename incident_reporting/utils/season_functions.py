@@ -95,3 +95,12 @@ def create_seasonal_incident_totals(
         type_counts_to_sorted_list(total_hours),
         type_counts_to_sorted_list(winter_hours),
     )
+
+
+def create_hour_and_breakdown_counts(
+    season_count: {int: [tuple[str, int]]}
+) -> ([dict], [dict]):
+    hour_counts: [dict] = []
+    breakdown_counts: [dict] = []
+
+    return hour_counts, breakdown_counts

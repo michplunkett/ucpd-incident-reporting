@@ -1,12 +1,17 @@
+let chart;
 const hours = [];
-let selectedSeason = [];
 for (let hour = 0; hour < 24; hour++) hours.push(hour);
 
-let fallSummary = {};
-let springSummary = {};
-let summerSummary = {};
-let totalSummary = {};
-let winterSummary = {};
+let fallHours = [];
+let fallHourBreakdown = [];
+let springHours = [];
+let springHourBreakdown = [];
+let summerHours = [];
+let summerHourBreakdown = [];
+let totalHours = [];
+let totalHourBreakdown = [];
+let winterHours = [];
+let winterHourBreakdown = [];
 
 async function getIncidents() {
   const response = await fetch("/incidents/hourly");
@@ -14,45 +19,73 @@ async function getIncidents() {
 }
 
 getIncidents().then((r) => {
-  fallSummary = r["fall"];
-  springSummary = r["spring"];
-  summerSummary = r["summer"];
-  totalSummary = r["total"];
-  winterSummary = r["winter"];
+  fallHours = r["fall_hour_counts"];
+  fallHourBreakdown = r["fall_breakdown_counts"];
+  springHours = r["spring_hour_counts"];
+  springHourBreakdown = r["spring_breakdown_counts"];
+  summerHours = r["summer_hour_counts"];
+  summerHourBreakdown = r["summer_breakdown_counts"];
+  totalHours = r["total_hour_counts"];
+  totalHourBreakdown = r["total_breakdown_counts"];
+  winterHours = r["winter_hour_counts"];
+  winterHourBreakdown = r["winter_breakdown_counts"];
 
-  function createVisual() {
-    Highcharts.chart("visual-container", {
-      data: {
-        table: "freq",
-        startRow: 1,
-        endRow: 17,
-        endColumn: 7,
+  chart = Highcharts.chart("visual-container", {
+    chart: {
+      type: "column",
+    },
+    title: {
+      text: "UCPD Incident Type Sums per Hour of the Day",
+      align: "center",
+    },
+    subtitle: {
+      text: "Based on Data From 2011 to the Most Recent Completed Year",
+      align: "center",
+    },
+    accessibility: {
+      announceNewData: {
+        enabled: true,
       },
-
-      chart: {
-        polar: true,
-        type: "column",
+    },
+    legend: {
+      enabled: false,
+    },
+    plotOptions: {
+      series: {
+        borderWidth: 0,
+        dataLabels: {
+          enabled: false,
+        },
       },
-
+    },
+    tooltip: {
+      headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+      pointFormat:
+        '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}%</b> of total<br/>',
+    },
+    xAxis: {
+      type: "category",
+      categories: hours,
+    },
+    yAxis: {
       title: {
-        text: "UCPD Incident Type Sums per Hour of the Day",
-        align: "center",
+        text: "Frequency of Incident Type(s)",
       },
-
-      subtitle: {
-        text: "Based on Data From 2011 to the Most Recent Completed Year",
-        align: "center",
+    },
+    series: [
+      {
+        name: "Hour of Day",
+        colorByPoint: true,
+        data: [],
       },
-
-      pane: {
-        size: "90%",
+    ],
+    drilldown: {
+      breadcrumbs: {
+        position: {
+          align: "right",
+        },
       },
-
-      xAxis: {
-        categories: hours,
-      },
-    });
-  }
-
-  createVisual();
+      series: {},
+    },
+  });
 });
