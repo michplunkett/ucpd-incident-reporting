@@ -19,25 +19,19 @@ async function getIncidents() {
   return response.json();
 }
 
-getIncidents().then((r) => {
-  fallHours = r["fall_hour_counts"];
-  fallHourBreakdown = r["fall_breakdown_counts"];
-  springHours = r["spring_hour_counts"];
-  springHourBreakdown = r["spring_breakdown_counts"];
-  summerHours = r["summer_hour_counts"];
-  summerHourBreakdown = r["summer_breakdown_counts"];
-  totalHours = r["total_hour_counts"];
-  totalHourBreakdown = r["total_breakdown_counts"];
-  winterHours = r["winter_hour_counts"];
-  winterHourBreakdown = r["winter_breakdown_counts"];
-
-  selectedHours = totalHours;
-  selectedHoursBreakdown = totalHourBreakdown;
-
+function createVisual() {
   chart = Highcharts.chart("visual-container", {
     colors: ["#800000"],
     chart: {
       type: "column",
+    },
+    loading: {
+      style: {
+        position: "absolute",
+        backgroundColor: "#ffffff",
+        opacity: 0.9,
+        textAlign: "center",
+      },
     },
     lang: {
       thousandsSep: ",",
@@ -88,13 +82,6 @@ getIncidents().then((r) => {
         text: "Frequency of Incident Type(s)",
       },
     },
-    series: [
-      {
-        name: "Hour of Day",
-        colorByPoint: true,
-        data: selectedHours,
-      },
-    ],
     drilldown: {
       breadcrumbs: {
         position: {
@@ -104,31 +91,62 @@ getIncidents().then((r) => {
     },
   });
 
-  document
-    .getElementById("season-select")
-    .addEventListener("change", (event) => {
-      const selectSeason = event.target.value;
-      if (selectSeason === "Fall") {
-        selectedHours = fallHours;
-        selectedHoursBreakdown = fallHourBreakdown;
-      } else if (selectSeason === "Spring") {
-        selectedHours = springHours;
-        selectedHoursBreakdown = springHourBreakdown;
-      } else if (selectSeason === "Summer") {
-        selectedHours = summerHours;
-        selectedHoursBreakdown = summerHourBreakdown;
-      } else if (selectSeason === "Winter") {
-        selectedHours = winterHours;
-        selectedHoursBreakdown = winterHourBreakdown;
-      } else if (selectSeason === "Total") {
-        selectedHours = totalHours;
-        selectedHoursBreakdown = totalHourBreakdown;
-      }
+  chart.showLoading("Loading all season incident data...");
 
-      chart.drillUp();
-      // TODO: Setting the data to empty is a hack that allows me to
-      //  reset the drilldown.
-      chart.series[0].setData([]);
-      chart.series[0].setData(selectedHours);
+  getIncidents().then((r) => {
+    fallHours = r["fall_hour_counts"];
+    fallHourBreakdown = r["fall_breakdown_counts"];
+    springHours = r["spring_hour_counts"];
+    springHourBreakdown = r["spring_breakdown_counts"];
+    summerHours = r["summer_hour_counts"];
+    summerHourBreakdown = r["summer_breakdown_counts"];
+    totalHours = r["total_hour_counts"];
+    totalHourBreakdown = r["total_breakdown_counts"];
+    winterHours = r["winter_hour_counts"];
+    winterHourBreakdown = r["winter_breakdown_counts"];
+
+    selectedHours = totalHours;
+    selectedHoursBreakdown = totalHourBreakdown;
+
+    chart.addSeries({
+      name: "Hour of Day",
+      colorByPoint: true,
+      data: selectedHours,
     });
-});
+
+    chart.hideLoading();
+
+    document
+      .getElementById("season-select")
+      .addEventListener("change", (event) => {
+        const selectSeason = event.target.value;
+        if (selectSeason === "fall") {
+          selectedHours = fallHours;
+          selectedHoursBreakdown = fallHourBreakdown;
+        } else if (selectSeason === "spring") {
+          selectedHours = springHours;
+          selectedHoursBreakdown = springHourBreakdown;
+        } else if (selectSeason === "summer") {
+          selectedHours = summerHours;
+          selectedHoursBreakdown = summerHourBreakdown;
+        } else if (selectSeason === "winter") {
+          selectedHours = winterHours;
+          selectedHoursBreakdown = winterHourBreakdown;
+        } else if (selectSeason === "all season") {
+          selectedHours = totalHours;
+          selectedHoursBreakdown = totalHourBreakdown;
+        }
+
+        chart.showLoading(`Loading ${selectSeason} incident data...`);
+
+        setTimeout(() => {
+          chart.drillUp();
+          // TODO: Setting the data to empty is a hack that allows me to
+          //  reset the drilldown.
+          chart.series[0].setData([]);
+          chart.series[0].setData(selectedHours);
+          chart.hideLoading();
+        }, 2000);
+      });
+  });
+}
