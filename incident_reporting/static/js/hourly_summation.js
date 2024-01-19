@@ -146,7 +146,7 @@ function createVisual() {
           chart.series[0].setData([]);
           chart.series[0].setData(selectedHours);
           chart.hideLoading();
-        }, 2000);
+        }, 1500);
       });
   });
 }
