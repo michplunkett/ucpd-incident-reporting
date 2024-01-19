@@ -10,12 +10,17 @@
   <div id="category-selection">
     <label for="season-select">Select a Season:</label>
     <select class="visual-select" name="season-select" id="season-select">
-      <option value="Total">All Seasons</option>
-      <option value="Spring">Spring</option>
-      <option value="Summer">Summer</option>
-      <option value="Fall">Fall</option>
-      <option value="Winter">Winter</option>
+      <option value="all season">All Seasons</option>
+      <option value="spring">Spring</option>
+      <option value="summer">Summer</option>
+      <option value="fall">Fall</option>
+      <option value="winter">Winter</option>
     </select>
   </div>
+  <div id="loading-visual-container">
+    <span id="loading-content"></span>
+  </div>
   <div id="visual-container"></div>
+  <!-- Load visual once the visual-container div has loaded -->
+  <script type="text/javascript">createVisual();</script>
 {% endblock content %}
