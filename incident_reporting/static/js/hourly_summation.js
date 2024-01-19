@@ -1,5 +1,7 @@
 let chart;
 
+const loadingContainer = "#loading-visual-container";
+
 let fallHours = [];
 let fallHourBreakdown = [];
 let springHours = [];
@@ -14,6 +16,21 @@ let winterHourBreakdown = [];
 let selectedHours = [];
 let selectedHoursBreakdown = [];
 
+function showLoadingContainer(inputStr) {
+  document.querySelector("#loading-content").innerText = inputStr;
+  // Using a setTimeout to trigger a DOM redraw
+
+  setTimeout(() => {
+    document.querySelector(loadingContainer).classList.add("loading");
+  }, 0);
+}
+
+function hideLoadingContainer() {
+  // Using a setTimeout to trigger a DOM redraw
+  document.querySelector(loadingContainer).classList.remove("loading");
+  setTimeout(() => {}, 0);
+}
+
 async function getIncidents() {
   const response = await fetch("/incidents/hourly");
   return response.json();
@@ -27,7 +44,6 @@ function createVisual() {
     },
     loading: {
       style: {
-        position: "absolute",
         backgroundColor: "#ffffff",
         opacity: 0.9,
         textAlign: "center",
@@ -91,7 +107,7 @@ function createVisual() {
     },
   });
 
-  chart.showLoading("Loading all season incident data...");
+  showLoadingContainer("Loading all season incident data...");
 
   getIncidents().then((r) => {
     fallHours = r["fall_hour_counts"];
@@ -114,7 +130,7 @@ function createVisual() {
       data: selectedHours,
     });
 
-    chart.hideLoading();
+    hideLoadingContainer();
 
     document
       .getElementById("season-select")
@@ -137,7 +153,7 @@ function createVisual() {
           selectedHoursBreakdown = totalHourBreakdown;
         }
 
-        chart.showLoading(`Loading ${selectSeason} incident data...`);
+        showLoadingContainer(`Loading ${selectSeason} incident data...`);
 
         setTimeout(() => {
           chart.drillUp();
@@ -145,7 +161,7 @@ function createVisual() {
           //  reset the drilldown.
           chart.series[0].setData([]);
           chart.series[0].setData(selectedHours);
-          chart.hideLoading();
+          hideLoadingContainer();
         }, 1500);
       });
   });
