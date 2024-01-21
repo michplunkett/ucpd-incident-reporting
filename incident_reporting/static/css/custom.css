@@ -93,6 +93,11 @@
     padding-bottom: 15px;
 }
 
+#map-container {
+    height: calc(100% - 95px);
+    padding-bottom: 15px;
+}
+
 #loading-visual-container {
     background-color: #ffffff;
     bottom: 0;
