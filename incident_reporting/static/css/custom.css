@@ -94,8 +94,11 @@
 }
 
 #map-container {
-    height: calc(100% - 90px);
+    height: calc(100% - 65px);
     padding-bottom: 10px;
+    @media (max-width: 482px) {
+        height: calc(100% - 90px);
+    }
 }
 
 #loading-visual-container {
