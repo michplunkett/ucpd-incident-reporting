@@ -1,142 +1,141 @@
 @font-face {
-    font-family: 'HCo_Verlag', sans-serif;
-    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-Book.otf')
-        format('opentype');
+  font-family: "HCo_Verlag", sans-serif;
+  src: url("https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-Book.otf")
+    format("opentype");
 }
 
 @font-face {
-    font-family: 'HCo_Verlag', sans-serif;
-    font-style: italic;
-    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-BookItalic.otf')
-        format('opentype');
+  font-family: "HCo_Verlag", sans-serif;
+  font-style: italic;
+  src: url("https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-BookItalic.otf")
+    format("opentype");
 }
 
 @font-face {
-    font-family: 'HCo_Verlag', sans-serif;
-    font-weight: 200;
-    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-XLight.otf')
-        format('opentype');
+  font-family: "HCo_Verlag", sans-serif;
+  font-weight: 200;
+  src: url("https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-XLight.otf")
+    format("opentype");
 }
 
 @font-face {
-    font-family: 'HCo_Verlag', sans-serif;
-    font-weight: 200;
-    font-style: italic;
-    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-XLightItalic.otf')
-        format('opentype');
+  font-family: "HCo_Verlag", sans-serif;
+  font-weight: 200;
+  font-style: italic;
+  src: url("https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-XLightItalic.otf")
+    format("opentype");
 }
 
 @font-face {
-    font-family: 'HCo_Verlag', sans-serif;
-    font-weight: 300;
-    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-Light.otf')
-        format('opentype');
+  font-family: "HCo_Verlag", sans-serif;
+  font-weight: 300;
+  src: url("https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-Light.otf")
+    format("opentype");
 }
 
 @font-face {
-    font-family: 'HCo_Verlag', sans-serif;
-    font-weight: 300;
-    font-style: italic;
-    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-LightItalic.otf')
-        format('opentype');
+  font-family: "HCo_Verlag", sans-serif;
+  font-weight: 300;
+  font-style: italic;
+  src: url("https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-LightItalic.otf")
+    format("opentype");
 }
 
 @font-face {
-    font-family: 'HCo_Verlag', sans-serif;
-    font-weight: 700;
-    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-Bold.otf')
-        format('opentype');
+  font-family: "HCo_Verlag", sans-serif;
+  font-weight: 700;
+  src: url("https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-Bold.otf")
+    format("opentype");
 }
 
 @font-face {
-    font-family: 'HCo_Verlag', sans-serif;
-    font-weight: 700;
-    font-style: italic;
-    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-BoldItalic.otf')
-        format('opentype');
+  font-family: "HCo_Verlag", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+  src: url("https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-BoldItalic.otf")
+    format("opentype");
 }
 
 @font-face {
-    font-family: 'HCo_Verlag', sans-serif;
-    font-weight: 900;
-    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-Black.otf')
-        format('opentype');
+  font-family: "HCo_Verlag", sans-serif;
+  font-weight: 900;
+  src: url("https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-Black.otf")
+    format("opentype");
 }
 
 @font-face {
-    font-family: 'HCo_Verlag', sans-serif;
-    font-weight: 900;
-    font-style: italic;
-    src: url('https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-BlackItalic.otf')
-        format('opentype');
+  font-family: "HCo_Verlag", sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  src: url("https://chicagomaroon.com/wp-content/uploads/2023/04/Verlag-BlackItalic.otf")
+    format("opentype");
 }
 
 #home-container {
-    padding: 20px;
+  padding: 20px;
 }
 
 #category-selection {
-    padding-left: 20px;
-    padding-top: 10px;
+  padding-left: 20px;
+  padding-top: 10px;
 }
 
 #category-selection * {
-    display: inline;
+  display: inline;
 }
 
 #category-selection .visual-select {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 #visual-container {
-    height: calc(100% - 60px);
-    padding-bottom: 5px;
+  height: calc(100% - 60px);
+  padding-bottom: 5px;
 }
 
 #map-container {
-    height: calc(100% - 65px);
-    padding-bottom: 10px;
-    @media (max-width: 482px) {
-        height: calc(100% - 90px);
-    }
+  height: calc(100% - 65px);
+  padding-bottom: 10px;
+  @media (max-width: 482px) {
+    height: calc(100% - 90px);
+  }
 }
 
 #loading-visual-container {
-    background-color: #ffffff;
-    bottom: 0;
-    display: none;
-    height: calc(100% - 55px);
-    opacity: 0.9;
-    position: fixed;
-    text-align: center;
-    width: 100%;
-    z-index: 10;
+  background-color: #ffffff;
+  bottom: 0;
+  display: none;
+  height: calc(100% - 55px);
+  opacity: 0.9;
+  position: fixed;
+  text-align: center;
+  width: 100%;
+  z-index: 10;
 }
 
 #loading-visual-container.loading {
-    display: block;
+  display: block;
 }
 
 #loading-content {
-    font-weight: bold;
-    position: relative;
-    top: 45%;
+  font-weight: bold;
+  position: relative;
+  top: 45%;
 }
 
-
 .incident-title {
-    margin-top:2px;
-    margin-bottom: 8px;
+  margin-top: 2px;
+  margin-bottom: 8px;
 }
 
 .incident-information {
-    margin: 0 0 2px;
+  margin: 0 0 2px;
 }
 
 html,
 body {
-    height: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding: 0;
+  height: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
 }
