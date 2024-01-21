@@ -96,8 +96,12 @@
 #map-container {
   height: calc(100% - 65px);
   padding-bottom: 10px;
-  @media (max-width: 482px) {
+}
+
+@media (max-width: 482px) {
+  #map-container {
     height: calc(100% - 90px);
+    padding-bottom: 11px;
   }
 }
 
