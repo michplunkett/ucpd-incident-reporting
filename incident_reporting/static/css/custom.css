@@ -94,15 +94,15 @@
 }
 
 #loading-visual-container {
-    display: none;
-    position: fixed;
     background-color: #ffffff;
+    bottom: 0;
+    display: none;
+    height: calc(100% - 55px);
     opacity: 0.9;
+    position: fixed;
     text-align: center;
-    z-index: 10;
-    top: 63px;
     width: 100%;
-    height: calc(100% - 70px);
+    z-index: 10;
 }
 
 #loading-visual-container.loading {
