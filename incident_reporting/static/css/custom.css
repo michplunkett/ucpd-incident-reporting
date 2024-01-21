@@ -89,13 +89,13 @@
 }
 
 #visual-container {
-    height: calc(100% - 70px);
-    padding-bottom: 15px;
+    height: calc(100% - 60px);
+    padding-bottom: 5px;
 }
 
 #map-container {
-    height: calc(100% - 95px);
-    padding-bottom: 15px;
+    height: calc(100% - 90px);
+    padding-bottom: 10px;
 }
 
 #loading-visual-container {
