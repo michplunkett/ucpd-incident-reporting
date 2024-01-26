@@ -130,10 +130,16 @@
 .incident-title {
   margin-top: 2px;
   margin-bottom: 8px;
+  margin-right: 12px;
 }
 
 .incident-information {
-  margin: 0 0 2px;
+  margin: 0 12px 2px 0;
+  width: 300px;
+}
+
+.incident-information:last-of-type {
+  margin-bottom: 12px;
 }
 
 html,
