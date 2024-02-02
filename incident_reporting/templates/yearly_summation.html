@@ -7,7 +7,7 @@
           src="{{ url_for('static', path='/js/yearly_summation.js') }}"></script>
 {% endblock graphic_script %}
 {% block content %}
-  <div id="visual-container"></div>
+  <div id="visual-container" class="full-screen"></div>
   <!-- Load visual once the visual-container div has loaded -->
   <script type="text/javascript">createVisual();</script>
 {% endblock content %}

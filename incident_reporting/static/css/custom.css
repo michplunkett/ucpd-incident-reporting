@@ -76,6 +76,7 @@
 }
 
 #category-selection {
+  border-bottom: #ececec solid 1px;
   padding-left: 20px;
   padding-top: 10px;
 }
@@ -91,6 +92,10 @@
 #visual-container {
   height: calc(100% - 60px);
   padding-bottom: 5px;
+}
+
+#visual-container.full-screen {
+  height: calc(100% - 5px);
 }
 
 #map-container {
