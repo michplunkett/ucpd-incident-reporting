@@ -132,6 +132,14 @@
   top: 45%;
 }
 
+.gm-style .gm-style-iw {
+  max-width: none !important;
+}
+
+.gm-style-iw-d {
+  max-height: none !important;
+}
+
 .incident-title {
   margin-top: 2px;
   margin-bottom: 8px;
