@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 
+import polars as pl
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -12,6 +13,7 @@ from incident_reporting.utils.constants import (
     KEY_REPORTED,
     KEY_REPORTED_DATE,
     KEY_TYPE,
+    KEY_VALIDATED_ADDRESS,
     LOGGING_FORMAT,
     TYPE_INFORMATION,
     UCPD_DATE_FORMAT,
@@ -59,6 +61,9 @@ def thirty_day_map(request: Request) -> Response:
 @app.get("/incidents/map", response_class=JSONResponse)
 def get_map_incidents() -> JSONResponse:
     df, _ = client.get_last_30_days_of_incidents(True)
+
+    # Remove any incidents without valid addresses
+    df = df.filter(pl.col(KEY_VALIDATED_ADDRESS) != "")
 
     # Convert date and datetime objects to strings
     df_dict = df.to_dicts()
