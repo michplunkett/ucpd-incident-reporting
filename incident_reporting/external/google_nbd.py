@@ -72,6 +72,7 @@ class Incident(Model):
     comments = StringProperty()
     disposition = StringProperty()
     location = StringProperty()
+    season = StringProperty(indexed=True)
     validated_address = StringProperty()
     validated_location = GeoPtProperty()
 

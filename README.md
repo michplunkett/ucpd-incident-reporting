@@ -1,6 +1,9 @@
 # UChicago Incident Page Reporter
 This application makes use of scraped incidents from the UCPD Daily Incident Reports and displays them in a handful of ways.
 
+## Article(s) Citing this Project
+- The Maroon Launches UChicago Police Department Incident Reporter: [Link](https://chicagomaroon.com/41255/grey-city/the-maroon-launches-uchicago-police-department-incident-reporter/)
+
 ## Project Requirements
 - Python version: `^3.11`
 - [Poetry](https://python-poetry.org/)
