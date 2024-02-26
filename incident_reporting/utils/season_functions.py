@@ -4,6 +4,7 @@ import polars as pl
 
 from incident_reporting.utils.constants import (
     KEY_REPORTED,
+    KEY_SEASON,
     KEY_TYPE,
     TYPE_INFORMATION,
 )
@@ -16,18 +17,6 @@ def create_or_increment_type(
         hour_dict[reported_dt.hour][i_type] += 1
     else:
         hour_dict[reported_dt.hour][i_type] = 1
-
-
-def determine_season(test_date: datetime) -> str:
-    test_date_tuple = (test_date.month, test_date.day)
-    if (3, 1) <= test_date_tuple < (5, 31):
-        return "Spring"
-    elif (6, 1) <= test_date_tuple < (8, 31):
-        return "Summer"
-    elif (9, 1) <= test_date_tuple < (12, 1):
-        return "Fall"
-    else:
-        return "Winter"
 
 
 def type_counts_to_sorted_list(
@@ -66,11 +55,10 @@ def create_seasonal_incident_totals(
     df_dict = df.to_dicts()
     for i in range(len(df_dict)):
         incident = df_dict[i]
-        season = determine_season(df_dict[i][KEY_REPORTED])
         for t in types:
             if t in incident[KEY_TYPE].split(" / "):
                 create_or_increment_type(total_hours, t, incident[KEY_REPORTED])
-                match season:
+                match incident[KEY_SEASON]:
                     case "Fall":
                         create_or_increment_type(
                             fall_hours, t, incident[KEY_REPORTED]
