@@ -1,8 +1,10 @@
 import logging
+from http import HTTPMethod, HTTPStatus
 from pathlib import Path
 
 import polars as pl
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -40,13 +42,27 @@ templates = Jinja2Templates(directory=str(Path(base_dir, "templates")))
 
 client = GoogleNBD()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://0.0.0.0:8000",
+        "https://0.0.0.0:8000",
+        "https://ucpd-incident-reporter-7cfdc3369124.herokuapp.com/",
+    ],
+    allow_credentials=True,
+    allow_methods=[HTTPMethod.GET],
+    allow_headers=["*"],
+)
 
-@app.get("/", response_class=HTMLResponse)
+
+@app.get("/", response_class=HTMLResponse, status_code=HTTPStatus.OK)
 def home(request: Request) -> Response:
     return templates.TemplateResponse("home.html", {"request": request})
 
 
-@app.get("/thirty_day_map", response_class=HTMLResponse)
+@app.get(
+    "/thirty_day_map", response_class=HTMLResponse, status_code=HTTPStatus.OK
+)
 def thirty_day_map(request: Request) -> Response:
     _, types = client.get_last_30_days_of_incidents(True)
     if TYPE_INFORMATION in types:
@@ -58,7 +74,9 @@ def thirty_day_map(request: Request) -> Response:
     )
 
 
-@app.get("/incidents/map", response_class=JSONResponse)
+@app.get(
+    "/incidents/map", response_class=JSONResponse, status_code=HTTPStatus.OK
+)
 def get_map_incidents() -> JSONResponse:
     df, _ = client.get_last_30_days_of_incidents(True)
 
@@ -79,14 +97,18 @@ def get_map_incidents() -> JSONResponse:
     return JSONResponse(content={"incidents": df_dict})
 
 
-@app.get("/hourly_summation", response_class=HTMLResponse)
+@app.get(
+    "/hourly_summation", response_class=HTMLResponse, status_code=HTTPStatus.OK
+)
 def hourly_summation(request: Request) -> Response:
     return templates.TemplateResponse(
         "hourly_summation.html", {"request": request}
     )
 
 
-@app.get("/incidents/hourly", response_class=JSONResponse)
+@app.get(
+    "/incidents/hourly", response_class=JSONResponse, status_code=HTTPStatus.OK
+)
 def get_hourly_incidents() -> JSONResponse:
     # There's likely a more efficient way to do this, but I'm in a bit of a
     # rush. Here's hoping I address it later on.
@@ -136,14 +158,18 @@ def get_hourly_incidents() -> JSONResponse:
     )
 
 
-@app.get("/yearly_summation", response_class=HTMLResponse)
+@app.get(
+    "/yearly_summation", response_class=HTMLResponse, status_code=HTTPStatus.OK
+)
 def yearly_summation(request: Request) -> Response:
     return templates.TemplateResponse(
         "yearly_summation.html", {"request": request}
     )
 
 
-@app.get("/incidents/yearly", response_class=JSONResponse)
+@app.get(
+    "/incidents/yearly", response_class=JSONResponse, status_code=HTTPStatus.OK
+)
 def get_yearly_incidents() -> JSONResponse:
     df, types = client.get_last_year_of_incidents(True)
 
