@@ -38,7 +38,6 @@ EXCLUDED_INCIDENT_TYPES = [
     "Fondling",
     "Found Property",
     "Harassing Messages",
-    "Harassment By Electronic Means",
     "Harassment by Electronic Means",
     "Lost Property",
     "Lost Wallet",
