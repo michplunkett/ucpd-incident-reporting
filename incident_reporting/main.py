@@ -1,8 +1,10 @@
 import logging
+from http import HTTPMethod
 from pathlib import Path
 
 import polars as pl
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -39,6 +41,18 @@ app.mount(
 templates = Jinja2Templates(directory=str(Path(base_dir, "templates")))
 
 client = GoogleNBD()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://0.0.0.0:8000",
+        "https://0.0.0.0:8000",
+        "https://ucpd-incident-reporter-7cfdc3369124.herokuapp.com/",
+    ],
+    allow_credentials=True,
+    allow_methods=[HTTPMethod.GET],
+    allow_headers=["*"],
+)
 
 
 @app.get("/", response_class=HTMLResponse)
