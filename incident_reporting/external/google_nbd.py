@@ -28,19 +28,26 @@ from incident_reporting.utils.constants import (
 # Incidents of these types have been excluded from the list for the sake of
 # victim's privacy and due to the nature the incidents included in this list.
 EXCLUDED_INCIDENT_TYPES = [
-    "Chemical Spill",
+    "Aggravated Criminal Sexual Assault",
+    "Aggravated Domestic Assault",
+    "Aggravated Domestic Battery",
+    "Attempted Sexual Assault",
+    "Criminal Sexual Abuse",
+    "Criminal Sexual Assault",
     "Dating Violence",
-    "Dating",
+    "Domestic Aggravated Assault",
     "Domestic Aggravated Battery",
+    "Domestic Assault",
+    "Domestic Battery",
+    "Domestic Dispute",
+    "Domestic Disturbance",
+    "Domestic Issue",
     "Domestic",
     "Eavesdropping",
-    "Fire Alarm",
     "Fondling",
-    "Found Property",
     "Harassing Messages",
     "Harassment by Electronic Means",
-    "Lost Property",
-    "Lost Wallet",
+    "Indecent Exposure",
     "Luring a Minor",
     "Medical Call",
     "Medical Transport",
@@ -48,12 +55,13 @@ EXCLUDED_INCIDENT_TYPES = [
     "Sex Crime",
     "Sex Offender",
     "Sex Offense",
-    "Sex",
+    "Sex Related",
+    "Sexual Abuse",
     "Sexual Assault",
     "Stalking",
     "Suspicious Mail",
     "Threatening Phone Call",
-    "Violation Of Order Of Protection",
+    "Violation of Order of Protection",
     "Warrant",
     "Well-Being",
 ]
@@ -148,6 +156,14 @@ class GoogleNBD:
 
         return df
 
+    @staticmethod
+    def _includes_excluded(i_type: str) -> bool:
+        i_type = i_type.split(" / ")
+        for i in i_type:
+            if i in EXCLUDED_INCIDENT_TYPES:
+                return True
+        return False
+
     def _get_incidents_back_x_days(
         self, date_limit: date = None, exclude: bool = False
     ) -> pl.DataFrame:
@@ -177,9 +193,7 @@ class GoogleNBD:
 
             if exclude:
                 result = result.filter(
-                    ~pl.col(KEY_TYPE).str.contains(
-                        "|".join(EXCLUDED_INCIDENT_TYPES)
-                    )
+                    ~pl.col(KEY_TYPE).apply(self._includes_excluded)
                 )
 
             return result.sort(
