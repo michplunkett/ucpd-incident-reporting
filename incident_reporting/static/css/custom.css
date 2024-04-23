@@ -144,6 +144,8 @@
   margin-top: 2px;
   margin-bottom: 8px;
   margin-right: 12px;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .incident-information {
@@ -153,6 +155,9 @@
 
 @media screen and (max-width: 450px) {
   .incident-information {
+    width: 180px;
+  }
+  .incident-title {
     width: 180px;
   }
 }
