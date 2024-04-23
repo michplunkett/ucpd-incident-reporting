@@ -93,7 +93,7 @@ function createMap() {
               <p class="incident-information"><b>Predicted Address:</b> ${incident.validated_address}</p>
               <p class="incident-information"><b>Listed Address:</b> ${incident.location}</p>
               <p class="incident-information"><b>Reported Time:</b> ${incident.occurred}</p>
-              <p class="incident-information"><b>UCPD ID:</b> ${incident.ucpd_id}
+              <p class="incident-information"><b>UCPD ID:</b> ${incident.ucpd_id}</p>
             </div>
         `;
 
