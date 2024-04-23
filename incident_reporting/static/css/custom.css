@@ -148,7 +148,13 @@
 
 .incident-information {
   margin: 0 12px 2px 0;
-  width: 300px;
+  width: 230px;
+}
+
+@media screen and (max-width: 450px) {
+  .incident-information {
+    width: 180px;
+  }
 }
 
 .incident-information:last-of-type {
