@@ -11,7 +11,6 @@ from fastapi.templating import Jinja2Templates
 
 from incident_reporting.external.google_nbd import GoogleNBD
 from incident_reporting.utils.constants import (
-    KEY_COMMENTS,
     KEY_REPORTED,
     KEY_REPORTED_DATE,
     KEY_TYPE,
@@ -92,7 +91,6 @@ def get_map_incidents() -> JSONResponse:
         df_dict[i][KEY_REPORTED_DATE] = df_dict[i][KEY_REPORTED_DATE].strftime(
             UCPD_DATE_FORMAT
         )
-        del df_dict[i][KEY_COMMENTS]
 
     return JSONResponse(content={"incidents": df_dict})
 
