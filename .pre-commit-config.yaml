@@ -53,14 +53,7 @@ repos:
           - --target-version=py311
           - --select=B,C,E,F,W
           - --line-length=80
-
-  - repo: https://github.com/PyCQA/flake8
-    rev: 6.0.0
-    hooks:
-      - id: flake8
-        args:
-          - --ignore=E203,E402,E501,E800,W503,W391,E261
-          - --select=B,C,E,F,W,T4,B9
+          - --ignore=E203,E402,E501,E261
 
   - repo: https://github.com/Riverside-Healthcare/djLint
     rev: v1.32.1
