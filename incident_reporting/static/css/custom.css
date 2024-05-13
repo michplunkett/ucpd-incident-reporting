@@ -63,6 +63,10 @@ body {
   top: 45%;
 }
 
+.gm-style {
+  font-family: "Georgia", "serif";
+}
+
 .gm-style .gm-style-iw {
   max-width: none !important;
 }
