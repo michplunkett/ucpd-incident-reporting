@@ -179,6 +179,7 @@ class GoogleNBD:
         ).filter(pl.col(KEY_REPORTED_DATE) >= date_limit)
 
         with self.client.context():
+            # TODO: Add check if stored_df is empty.
             query = (
                 Incident.query(
                     Incident.reported_date

@@ -3,6 +3,14 @@ async function getIncidents() {
   return response.json();
 }
 
+Highcharts.setOptions({
+  chart: {
+    style: {
+      fontFamily: "Georgia, serif",
+    },
+  },
+});
+
 function createVisual() {
   getIncidents().then((r) => {
     const counts = r["counts"];

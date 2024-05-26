@@ -36,6 +36,14 @@ async function getIncidents() {
   return response.json();
 }
 
+Highcharts.setOptions({
+  chart: {
+    style: {
+      fontFamily: "Georgia, serif",
+    },
+  },
+});
+
 function createVisual() {
   chart = Highcharts.chart("visual-container", {
     colors: ["#800000"],
