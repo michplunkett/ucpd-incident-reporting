@@ -1,4 +1,4 @@
-name: Format-and-Fail
+name: Format and Fail
 on:
   push:
     branches: [ main ]
