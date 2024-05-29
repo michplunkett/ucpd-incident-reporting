@@ -72,16 +72,26 @@ body {
 }
 
 .gm-style-iw-d {
+  margin-top: -20px;
   max-height: none !important;
+}
+
+.gm-style-iw-chr button {
+  height: auto !important;
+  width: auto !important;
+}
+
+.gm-style-iw-chr button span {
+  margin: 3px !important;
 }
 
 .incident-title {
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 8px;
-  margin-right: 12px;
+  margin-right: 10px;
   margin-top: 2px;
-  width: 230px;
+  width: 200px;
 }
 
 .incident-information {
@@ -94,7 +104,7 @@ body {
     width: 180px;
   }
   .incident-title {
-    width: 180px;
+    width: 170px;
   }
 }
 
