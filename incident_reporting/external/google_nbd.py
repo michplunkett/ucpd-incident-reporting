@@ -150,17 +150,17 @@ class GoogleNBD:
         return GoogleNBD._standardize_df(pl.DataFrame(incident_list))
 
     @staticmethod
-    def _get_stored_incidents() -> pl.DataFrame | None:
+    def _get_stored_incidents() -> pl.DataFrame:
         file_path = (
             os.getcwd().replace("\\", "/")
             + "/incident_reporting/data/incident_dump.csv.gz"
         )
 
         if not os.path.exists(file_path):
-            return None
+            return pl.DataFrame()
 
         with gzip.open(file_path, FILE_OPEN_MODE_READ) as f:
-            return pl.read_csv(f.read())
+            return GoogleNBD._standardize_df(pl.read_csv(f.read()))
 
     @staticmethod
     def _includes_excluded(i_type: str) -> bool:
@@ -179,8 +179,9 @@ class GoogleNBD:
         stored_df = self._get_stored_incidents()
 
         with self.client.context():
-            if stored_df and not stored_df.is_empty():
-                stored_df = GoogleNBD._standardize_df(stored_df).filter(
+            # Check if the data frame has any rows.
+            if stored_df.shape[0]:
+                stored_df = stored_df.filter(
                     pl.col(KEY_REPORTED_DATE) >= date_limit
                 )
 
