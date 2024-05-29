@@ -185,7 +185,7 @@ class GoogleNBD:
                     pl.col(KEY_REPORTED_DATE) >= date_limit
                 )
 
-                query = self._process_incidents(
+                query = (
                     Incident.query(
                         Incident.reported_date
                         > stored_df[KEY_REPORTED_DATE]
@@ -196,13 +196,14 @@ class GoogleNBD:
                     .fetch()
                 )
 
+                if len(query):
+                    query = self._process_incidents(query)
+
                 result = (
-                    pl.concat([stored_df, self._process_incidents(query)])
-                    if len(query)
-                    else stored_df
+                    pl.concat([stored_df, query]) if len(query) else stored_df
                 )
             else:
-                result = self._process_incidents(
+                result = (
                     Incident.query(
                         Incident.reported_date
                         > date_limit.strftime(UCPD_MDY_KEY_DATE_FORMAT)
@@ -210,6 +211,7 @@ class GoogleNBD:
                     .order(-Incident.reported_date)
                     .fetch()
                 )
+                result = self._process_incidents(result)
 
             if exclude:
                 result = result.filter(
