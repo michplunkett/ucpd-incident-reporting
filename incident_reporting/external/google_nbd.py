@@ -150,16 +150,17 @@ class GoogleNBD:
         return GoogleNBD._standardize_df(pl.DataFrame(incident_list))
 
     @staticmethod
-    def _get_stored_incidents():
+    def _get_stored_incidents() -> pl.DataFrame | None:
         file_path = (
             os.getcwd().replace("\\", "/")
             + "/incident_reporting/data/incident_dump.csv.gz"
         )
 
-        with gzip.open(file_path, FILE_OPEN_MODE_READ) as f:
-            df = pl.read_csv(f.read())
+        if not os.path.exists(file_path):
+            return None
 
-        return df
+        with gzip.open(file_path, FILE_OPEN_MODE_READ) as f:
+            return pl.read_csv(f.read())
 
     @staticmethod
     def _includes_excluded(i_type: str) -> bool:
@@ -174,22 +175,16 @@ class GoogleNBD:
     ) -> pl.DataFrame:
         if not date_limit:
             date_limit = date(2000, 1, 1)
-        stored_df = GoogleNBD._standardize_df(
-            self._get_stored_incidents()
-        ).filter(pl.col(KEY_REPORTED_DATE) >= date_limit)
 
-        with self.client.context():
-            if stored_df.is_empty():
-                result = self._process_incidents(
-                    Incident.query(
-                        Incident.reported_date
-                        > date_limit.strftime(UCPD_MDY_KEY_DATE_FORMAT)
-                    )
-                    .order(-Incident.reported_date)
-                    .fetch()
-                )
-            else:
-                query = (
+        stored_df = self._get_stored_incidents()
+
+        if stored_df and not stored_df.is_empty():
+            stored_df = GoogleNBD._standardize_df(stored_df).filter(
+                pl.col(KEY_REPORTED_DATE) >= date_limit
+            )
+
+            with self.client.context():
+                query = self._process_incidents(
                     Incident.query(
                         Incident.reported_date
                         > stored_df[KEY_REPORTED_DATE]
@@ -205,15 +200,22 @@ class GoogleNBD:
                     if len(query)
                     else stored_df
                 )
-
-            if exclude:
-                result = result.filter(
-                    ~pl.col(KEY_TYPE).apply(self._includes_excluded)
+        else:
+            result = self._process_incidents(
+                Incident.query(
+                    Incident.reported_date
+                    > date_limit.strftime(UCPD_MDY_KEY_DATE_FORMAT)
                 )
-
-            return result.sort(
-                [KEY_REPORTED_DATE, KEY_REPORTED], descending=True
+                .order(-Incident.reported_date)
+                .fetch()
             )
+
+        if exclude:
+            result = result.filter(
+                ~pl.col(KEY_TYPE).apply(self._includes_excluded)
+            )
+
+        return result.sort([KEY_REPORTED_DATE, KEY_REPORTED], descending=True)
 
     def get_last_30_days_of_incidents(
         self, exclude: bool = False
