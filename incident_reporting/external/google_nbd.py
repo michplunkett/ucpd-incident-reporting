@@ -179,23 +179,32 @@ class GoogleNBD:
         ).filter(pl.col(KEY_REPORTED_DATE) >= date_limit)
 
         with self.client.context():
-            # TODO: Add check if stored_df is empty.
-            query = (
-                Incident.query(
-                    Incident.reported_date
-                    > stored_df[KEY_REPORTED_DATE]
-                    .max()
-                    .strftime(UCPD_MDY_KEY_DATE_FORMAT)
+            if stored_df.is_empty():
+                result = self._process_incidents(
+                    Incident.query(
+                        Incident.reported_date
+                        > date_limit.strftime(UCPD_MDY_KEY_DATE_FORMAT)
+                    )
+                    .order(-Incident.reported_date)
+                    .fetch()
                 )
-                .order(-Incident.reported_date)
-                .fetch()
-            )
+            else:
+                query = (
+                    Incident.query(
+                        Incident.reported_date
+                        > stored_df[KEY_REPORTED_DATE]
+                        .max()
+                        .strftime(UCPD_MDY_KEY_DATE_FORMAT)
+                    )
+                    .order(-Incident.reported_date)
+                    .fetch()
+                )
 
-            result = (
-                pl.concat([stored_df, self._process_incidents(query)])
-                if len(query)
-                else stored_df
-            )
+                result = (
+                    pl.concat([stored_df, self._process_incidents(query)])
+                    if len(query)
+                    else stored_df
+                )
 
             if exclude:
                 result = result.filter(
