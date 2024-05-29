@@ -150,16 +150,17 @@ class GoogleNBD:
         return GoogleNBD._standardize_df(pl.DataFrame(incident_list))
 
     @staticmethod
-    def _get_stored_incidents():
+    def _get_stored_incidents() -> pl.DataFrame:
         file_path = (
             os.getcwd().replace("\\", "/")
             + "/incident_reporting/data/incident_dump.csv.gz"
         )
 
-        with gzip.open(file_path, FILE_OPEN_MODE_READ) as f:
-            df = pl.read_csv(f.read())
+        if not os.path.exists(file_path):
+            return pl.DataFrame()
 
-        return df
+        with gzip.open(file_path, FILE_OPEN_MODE_READ) as f:
+            return GoogleNBD._standardize_df(pl.read_csv(f.read()))
 
     @staticmethod
     def _includes_excluded(i_type: str) -> bool:
@@ -174,28 +175,43 @@ class GoogleNBD:
     ) -> pl.DataFrame:
         if not date_limit:
             date_limit = date(2000, 1, 1)
-        stored_df = GoogleNBD._standardize_df(
-            self._get_stored_incidents()
-        ).filter(pl.col(KEY_REPORTED_DATE) >= date_limit)
+
+        stored_df = self._get_stored_incidents()
 
         with self.client.context():
-            # TODO: Add check if stored_df is empty.
-            query = (
-                Incident.query(
-                    Incident.reported_date
-                    > stored_df[KEY_REPORTED_DATE]
-                    .max()
-                    .strftime(UCPD_MDY_KEY_DATE_FORMAT)
+            # Check if the data frame has any rows.
+            if stored_df.shape[0]:
+                stored_df = stored_df.filter(
+                    pl.col(KEY_REPORTED_DATE) >= date_limit
                 )
-                .order(-Incident.reported_date)
-                .fetch()
-            )
 
-            result = (
-                pl.concat([stored_df, self._process_incidents(query)])
-                if len(query)
-                else stored_df
-            )
+                query = (
+                    Incident.query(
+                        Incident.reported_date
+                        > stored_df[KEY_REPORTED_DATE]
+                        .max()
+                        .strftime(UCPD_MDY_KEY_DATE_FORMAT)
+                    )
+                    .order(-Incident.reported_date)
+                    .fetch()
+                )
+
+                if len(query):
+                    query = self._process_incidents(query)
+
+                result = (
+                    pl.concat([stored_df, query]) if len(query) else stored_df
+                )
+            else:
+                result = (
+                    Incident.query(
+                        Incident.reported_date
+                        > date_limit.strftime(UCPD_MDY_KEY_DATE_FORMAT)
+                    )
+                    .order(-Incident.reported_date)
+                    .fetch()
+                )
+                result = self._process_incidents(result)
 
             if exclude:
                 result = result.filter(
