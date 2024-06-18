@@ -30,6 +30,7 @@ body {
 }
 
 #visual-container:has(table) {
+  font-size: 14px;
   margin-left: 10px;
   width: calc(100% - 20px);
 }
