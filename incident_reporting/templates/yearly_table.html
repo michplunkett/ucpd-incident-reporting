@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}
+  UCPD Incident Reporter - Previous Year's Incidents
+{% endblock title %}
+{% block graphic_script %}
+  <link href="{{ url_for('static', path='/dataTables.min.css') }}"
+        rel="stylesheet">
+  <script type="text/javascript"
+          src="{{ url_for('static', path='/jquery-3.7.1.min.js') }}"></script>
+  <script type="text/javascript"
+          src="{{ url_for('static', path='/dataTables.min.js') }}"></script>
+  <script type="text/javascript"
+          src="{{ url_for('static', path='/js/yearly_table.js') }}"></script>
+{% endblock graphic_script %}
+{% block content %}
+  <div id="visual-container" class="full-screen"></div>
+  <!-- Load visual once the visual-container div has loaded -->
+  <script type="text/javascript">createTable();</script>
+{% endblock content %}
