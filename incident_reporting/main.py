@@ -180,7 +180,7 @@ def yearly_summation(request: Request) -> Response:
     status_code=HTTPStatus.OK,
 )
 def get_yearly_incidents() -> JSONResponse:
-    df, types = client.get_last_year_of_incidents(True)
+    df, types = client.get_last_year_of_incidents()
 
     df_dict = df.to_dicts()
     df_dict = sorted(df_dict, key=itemgetter(KEY_REPORTED_DATE), reverse=True)
