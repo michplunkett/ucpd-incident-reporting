@@ -1,3 +1,4 @@
+import json
 import logging
 from http import HTTPMethod, HTTPStatus
 from operator import itemgetter
@@ -158,6 +159,13 @@ def get_hourly_incidents() -> JSONResponse:
 
 
 @app.get(
+    "/yearly_table", response_class=HTMLResponse, status_code=HTTPStatus.OK
+)
+def yearly_table(request: Request) -> Response:
+    return templates.TemplateResponse("yearly_table.html", {"request": request})
+
+
+@app.get(
     "/yearly_summation", response_class=HTMLResponse, status_code=HTTPStatus.OK
 )
 def yearly_summation(request: Request) -> Response:
@@ -178,9 +186,10 @@ def get_yearly_incidents() -> JSONResponse:
     df_dict = sorted(df_dict, key=itemgetter(KEY_REPORTED_DATE), reverse=True)
     types.sort()
 
+    # Possibly need to modify date formats.
     return JSONResponse(
         content={
-            "incidents": df_dict,
+            "incidents": json.dumps(df_dict, default=str),
             "types": types,
         }
     )
