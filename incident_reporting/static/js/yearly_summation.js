@@ -1,5 +1,5 @@
 async function getIncidents() {
-  const response = await fetch("/incidents/yearly");
+  const response = await fetch("/incidents/yearly/counts");
   return response.json();
 }
 

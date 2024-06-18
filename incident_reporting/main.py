@@ -166,7 +166,7 @@ def yearly_summation(request: Request) -> Response:
 
 
 @app.get(
-    "/incidents/yearly", response_class=JSONResponse, status_code=HTTPStatus.OK
+    "/incidents/yearly/counts", response_class=JSONResponse, status_code=HTTPStatus.OK
 )
 def get_yearly_incidents() -> JSONResponse:
     df, types = client.get_last_year_of_incidents(True)
