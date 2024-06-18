@@ -13,7 +13,10 @@
           src="{{ url_for('static', path='/js/yearly_table.js') }}"></script>
 {% endblock graphic_script %}
 {% block content %}
-  <div id="visual-container" class="full-screen"></div>
+  <div id="visual-container" class="full-screen">
+    <table id="previous-year-incidents">
+    </table>
+  </div>
   <!-- Load visual once the visual-container div has loaded -->
   <script type="text/javascript">createTable();</script>
 {% endblock content %}
