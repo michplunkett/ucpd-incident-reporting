@@ -29,6 +29,11 @@ body {
   height: calc(100% - 5px);
 }
 
+#visual-container:has(table) {
+  margin-left: 10px;
+  width: calc(100% - 20px);
+}
+
 #map-container {
   height: calc(100% - 66px);
   padding-bottom: 10px;
