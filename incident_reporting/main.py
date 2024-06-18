@@ -1,5 +1,6 @@
 import logging
 from http import HTTPMethod, HTTPStatus
+from operator import itemgetter
 from pathlib import Path
 
 import polars as pl
@@ -162,6 +163,26 @@ def get_hourly_incidents() -> JSONResponse:
 def yearly_summation(request: Request) -> Response:
     return templates.TemplateResponse(
         "yearly_summation.html", {"request": request}
+    )
+
+
+@app.get(
+    "/incidents/yearly/",
+    response_class=JSONResponse,
+    status_code=HTTPStatus.OK,
+)
+def get_yearly_incidents() -> JSONResponse:
+    df, types = client.get_last_year_of_incidents(True)
+
+    df_dict = df.to_dicts()
+    df_dict = sorted(df_dict, key=itemgetter(KEY_REPORTED_DATE), reverse=True)
+    types.sort()
+
+    return JSONResponse(
+        content={
+            "incidents": df_dict,
+            "types": types,
+        }
     )
 
 
