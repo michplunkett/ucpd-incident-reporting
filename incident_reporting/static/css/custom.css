@@ -35,6 +35,21 @@ body {
   width: calc(100% - 20px);
 }
 
+.col-category {
+  width: 15%;
+  text-wrap: wrap;
+}
+
+.col-description {
+  width: 60%;
+  text-wrap: wrap;
+}
+
+.col-location {
+  width: 20%;
+  text-wrap: wrap;
+}
+
 #map-container {
   height: calc(100% - 66px);
   padding-bottom: 10px;
