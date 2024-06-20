@@ -67,6 +67,14 @@ body {
   display: flex;
 }
 
+.dt-layout-cell.dt-end > .dt-search > label {
+  padding-top: 3px;
+}
+
+.dt-layout-cell.dt-end > .dt-search > input {
+  width: 250px;
+}
+
 #map-container {
   height: calc(100% - 66px);
   padding-bottom: 10px;
