@@ -29,6 +29,52 @@ body {
   height: calc(100% - 5px);
 }
 
+#visual-container:has(table) {
+  font-size: 14px;
+  margin-left: 10px;
+  width: calc(100% - 20px);
+}
+
+.col-category {
+  width: 15%;
+  text-wrap: wrap;
+}
+
+.col-description {
+  width: 60%;
+  text-wrap: wrap;
+}
+
+.col-location {
+  width: 20%;
+  text-wrap: wrap;
+}
+
+.dt-length {
+  display: flex;
+}
+
+.dt-length > label {
+  padding-left: 5px;
+  padding-top: 2px;
+}
+
+.dt-layout-cell.dt-end {
+  float: right;
+}
+
+.dt-layout-cell.dt-end > .dt-search {
+  display: flex;
+}
+
+.dt-layout-cell.dt-end > .dt-search > label {
+  padding-top: 3px;
+}
+
+.dt-layout-cell.dt-end > .dt-search > input {
+  width: 250px;
+}
+
 #map-container {
   height: calc(100% - 66px);
   padding-bottom: 10px;

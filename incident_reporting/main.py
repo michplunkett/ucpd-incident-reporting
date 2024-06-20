@@ -1,3 +1,4 @@
+import json
 import logging
 from http import HTTPMethod, HTTPStatus
 from pathlib import Path
@@ -157,6 +158,13 @@ def get_hourly_incidents() -> JSONResponse:
 
 
 @app.get(
+    "/yearly_table", response_class=HTMLResponse, status_code=HTTPStatus.OK
+)
+def yearly_table(request: Request) -> Response:
+    return templates.TemplateResponse("yearly_table.html", {"request": request})
+
+
+@app.get(
     "/yearly_summation", response_class=HTMLResponse, status_code=HTTPStatus.OK
 )
 def yearly_summation(request: Request) -> Response:
@@ -166,9 +174,28 @@ def yearly_summation(request: Request) -> Response:
 
 
 @app.get(
-    "/incidents/yearly", response_class=JSONResponse, status_code=HTTPStatus.OK
+    "/incidents/yearly/",
+    response_class=JSONResponse,
+    status_code=HTTPStatus.OK,
 )
 def get_yearly_incidents() -> JSONResponse:
+    df, _ = client.get_last_year_of_incidents()
+
+    df_dict = df.to_dicts()
+    for idx in range(len(df_dict)):
+        df_dict[idx][KEY_REPORTED] = df_dict[idx][KEY_REPORTED].strftime(
+            UCPD_DATE_FORMAT
+        )
+
+    return JSONResponse(content={"incidents": json.dumps(df_dict, default=str)})
+
+
+@app.get(
+    "/incidents/yearly/counts",
+    response_class=JSONResponse,
+    status_code=HTTPStatus.OK,
+)
+def get_yearly_incident_counts() -> JSONResponse:
     df, types = client.get_last_year_of_incidents(True)
 
     type_counts: {str: int} = {}
