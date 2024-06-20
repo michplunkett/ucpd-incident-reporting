@@ -180,19 +180,13 @@ def yearly_summation(request: Request) -> Response:
     status_code=HTTPStatus.OK,
 )
 def get_yearly_incidents() -> JSONResponse:
-    df, types = client.get_last_year_of_incidents()
+    df, _ = client.get_last_year_of_incidents()
 
     df_dict = df.to_dicts()
     df_dict = sorted(df_dict, key=itemgetter(KEY_REPORTED_DATE), reverse=True)
-    types.sort()
 
     # Possibly need to modify date formats.
-    return JSONResponse(
-        content={
-            "incidents": json.dumps(df_dict, default=str),
-            "types": types,
-        }
-    )
+    return JSONResponse(content={"incidents": json.dumps(df_dict, default=str)})
 
 
 @app.get(
