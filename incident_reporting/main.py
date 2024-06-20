@@ -1,7 +1,6 @@
 import json
 import logging
 from http import HTTPMethod, HTTPStatus
-from operator import itemgetter
 from pathlib import Path
 
 import polars as pl
@@ -183,9 +182,11 @@ def get_yearly_incidents() -> JSONResponse:
     df, _ = client.get_last_year_of_incidents()
 
     df_dict = df.to_dicts()
-    df_dict = sorted(df_dict, key=itemgetter(KEY_REPORTED_DATE), reverse=True)
+    for idx in range(len(df_dict)):
+        df_dict[idx][KEY_REPORTED] = df_dict[idx][KEY_REPORTED].strftime(
+            UCPD_DATE_FORMAT
+        )
 
-    # Possibly need to modify date formats.
     return JSONResponse(content={"incidents": json.dumps(df_dict, default=str)})
 
 
