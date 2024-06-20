@@ -50,6 +50,23 @@ body {
   text-wrap: wrap;
 }
 
+.dt-length {
+  display: flex;
+}
+
+.dt-length > label {
+  padding-left: 5px;
+  padding-top: 2px;
+}
+
+.dt-layout-cell.dt-end {
+  float: right;
+}
+
+.dt-layout-cell.dt-end > .dt-search {
+  display: flex;
+}
+
 #map-container {
   height: calc(100% - 66px);
   padding-bottom: 10px;
