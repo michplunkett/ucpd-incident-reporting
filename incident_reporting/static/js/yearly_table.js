@@ -5,8 +5,6 @@ async function getIncidents() {
 
 function createTable() {
   getIncidents().then((r) => {
-    const incidents = JSON.parse(r["incidents"]);
-    console.log(incidents[0]);
     const table = new DataTable("#previous-year-incidents", {
       columns: [
         { title: "UCPD ID", data: "ucpd_id" },
@@ -33,7 +31,14 @@ function createTable() {
           target: 4,
         },
       ],
-      data: incidents,
+      data: JSON.parse(r["incidents"]),
+      layout: {
+        topEnd: {
+          search: {
+            placeholder: "Enter search term(s) here",
+          },
+        },
+      },
       fixedHeader: true,
       order: [[2]],
       paging: true,
