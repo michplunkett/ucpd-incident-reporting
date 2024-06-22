@@ -75,6 +75,25 @@ body {
   width: 250px;
 }
 
+#previous-year-incidents_wrapper
+  .dt-layout-row:first-of-type
+  .dt-layout-cell
+  .dt-search {
+  margin-top: 0;
+}
+
+@media screen and (max-width: 767px) {
+  #previous-year-incidents_wrapper .dt-layout-row:first-of-type {
+    display: table;
+  }
+
+  #previous-year-incidents_wrapper
+    .dt-layout-row:first-of-type
+    .dt-layout-cell {
+    display: table-cell;
+  }
+}
+
 #map-container {
   height: calc(100% - 66px);
   padding-bottom: 10px;
