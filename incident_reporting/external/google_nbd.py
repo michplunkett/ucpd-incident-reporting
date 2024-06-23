@@ -1,4 +1,5 @@
 """Contains code relating to the Google Cloud Platform Datastore service."""
+
 import gzip
 import json
 import os
