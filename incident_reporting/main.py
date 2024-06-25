@@ -6,7 +6,12 @@ from pathlib import Path
 import polars as pl
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse, Response
+from fastapi.responses import (
+    HTMLResponse,
+    JSONResponse,
+    Response,
+    StreamingResponse,
+)
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -222,4 +227,22 @@ def get_yearly_incident_counts() -> JSONResponse:
             "counts": [tc[1] for tc in type_counts_list],
             "types": [tc[0] for tc in type_counts_list],
         }
+    )
+
+
+@app.get(
+    "/incidents/all",
+    response_class=StreamingResponse,
+    status_code=HTTPStatus.OK,
+)
+def get_all_incidents_as_file() -> StreamingResponse:
+    df, _ = client.get_last_year_of_incidents()
+    df_pandas = df.to_pandas()
+
+    return StreamingResponse(
+        iter([df_pandas.to_csv(index=False)]),
+        media_type="text/csv",
+        headers={
+            "Content-Disposition": "attachment; filename=all_incident_data.csv"
+        },
     )
