@@ -16,13 +16,13 @@ from fastapi.responses import (
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from incident_reporting.external.google_logger import init_logger
 from incident_reporting.external.google_nbd import GoogleNBD
 from incident_reporting.utils.constants import (
     KEY_REPORTED,
     KEY_REPORTED_DATE,
     KEY_TYPE,
     KEY_VALIDATED_ADDRESS,
-    LOGGING_FORMAT,
     TYPE_INFORMATION,
     UCPD_DATE_FORMAT,
     UCPD_MDY_DATE_FORMAT,
@@ -33,8 +33,7 @@ from incident_reporting.utils.season_functions import (
 )
 
 
-logging.basicConfig(level=logging.INFO, format=LOGGING_FORMAT)
-logger = logging.getLogger()
+init_logger()
 
 app = FastAPI(debug=True)
 base_dir = Path(__file__).resolve().parent
@@ -63,6 +62,9 @@ app.add_middleware(
 
 @app.get("/", response_class=HTMLResponse, status_code=HTTPStatus.OK)
 def home(request: Request) -> Response:
+    logging.info(
+        f"Home page requested from this IP address: {request.client.host}"
+    )
     return templates.TemplateResponse("home.html", {"request": request})
 
 
@@ -83,7 +85,10 @@ def thirty_day_map(request: Request) -> Response:
 @app.get(
     "/incidents/map", response_class=JSONResponse, status_code=HTTPStatus.OK
 )
-def get_map_incidents() -> JSONResponse:
+def get_map_incidents(request: Request) -> JSONResponse:
+    logging.info(
+        f"Incident map requested from this IP address: {request.client.host}"
+    )
     df, _ = client.get_last_30_days_of_incidents(True)
 
     # Remove any incidents without valid addresses
@@ -106,6 +111,9 @@ def get_map_incidents() -> JSONResponse:
     "/hourly_summation", response_class=HTMLResponse, status_code=HTTPStatus.OK
 )
 def hourly_summation(request: Request) -> Response:
+    logging.info(
+        f"Hourly summation requested from this IP address: {request.client.host}"
+    )
     return templates.TemplateResponse(
         "hourly_summation.html", {"request": request}
     )
@@ -167,6 +175,9 @@ def get_hourly_incidents() -> JSONResponse:
     "/yearly_table", response_class=HTMLResponse, status_code=HTTPStatus.OK
 )
 def yearly_table(request: Request) -> Response:
+    logging.info(
+        f"Yearly table requested from this IP address: {request.client.host}"
+    )
     return templates.TemplateResponse("yearly_table.html", {"request": request})
 
 
@@ -174,6 +185,9 @@ def yearly_table(request: Request) -> Response:
     "/yearly_summation", response_class=HTMLResponse, status_code=HTTPStatus.OK
 )
 def yearly_summation(request: Request) -> Response:
+    logging.info(
+        f"Yearly summation requested from this IP address: {request.client.host}"
+    )
     return templates.TemplateResponse(
         "yearly_summation.html", {"request": request}
     )
@@ -236,7 +250,10 @@ def get_yearly_incident_counts() -> JSONResponse:
     response_class=StreamingResponse,
     status_code=HTTPStatus.OK,
 )
-def get_all_incidents_as_file() -> StreamingResponse:
+def get_all_incidents_as_file(request: Request) -> StreamingResponse:
+    logging.info(
+        f"All incidents CSV requested from this IP address: {request.client.host}"
+    )
     df, _ = client.get_last_year_of_incidents()
     df_pandas = df.to_pandas()
     today = date.today().strftime("%m-%d-%Y")
