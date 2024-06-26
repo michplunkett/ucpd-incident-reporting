@@ -1,5 +1,6 @@
 import json
 import logging
+from datetime import date
 from http import HTTPMethod, HTTPStatus
 from pathlib import Path
 
@@ -238,11 +239,13 @@ def get_yearly_incident_counts() -> JSONResponse:
 def get_all_incidents_as_file() -> StreamingResponse:
     df, _ = client.get_last_year_of_incidents()
     df_pandas = df.to_pandas()
+    today = date.today().strftime("%m-%d-%Y")
+    headers = {
+        "Content-Disposition": f"attachment; filename=ucpd-incident-data.{today}.csv"
+    }
 
     return StreamingResponse(
         iter([df_pandas.to_csv(index=False)]),
         media_type="text/csv",
-        headers={
-            "Content-Disposition": "attachment; filename=all_incident_data.csv"
-        },
+        headers=headers,
     )
