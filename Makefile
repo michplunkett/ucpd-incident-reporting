@@ -10,4 +10,4 @@ lint:
 
 .PHONY: run
 run:
-	gunicorn incident_reporting.main:app --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+	gunicorn incident_reporting.main:app --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --reload
