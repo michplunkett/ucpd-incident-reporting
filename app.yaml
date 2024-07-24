@@ -1,5 +1,5 @@
-runtime: python312
-entrypoint: gunicorn -b :$PORT incident_reporting.main:app
+runtime: python311
+entrypoint: gunicorn incident_reporting.main:app -w 4 -k uvicorn.workers.UvicornWorker --log-level debug --bind 0.0.0.0:8000
 
 handlers:
 - url: /.*
