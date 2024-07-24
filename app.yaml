@@ -1,0 +1,6 @@
+runtime: python312
+entrypoint: gunicorn -b :$PORT incident_reporting.main:app
+
+handlers:
+- url: /.*
+  script: auto
