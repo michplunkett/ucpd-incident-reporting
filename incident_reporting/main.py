@@ -68,6 +68,11 @@ def home(request: Request) -> Response:
     return templates.TemplateResponse("home.html", {"request": request})
 
 
+@app.get("/status")
+def status(request: Request) -> JSONResponse:
+    return JSONResponse(status_code=HTTPStatus.OK, content="Everything is 💯")
+
+
 @app.get(
     "/thirty_day_map", response_class=HTMLResponse, status_code=HTTPStatus.OK
 )
