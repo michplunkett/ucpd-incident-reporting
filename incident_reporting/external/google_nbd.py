@@ -1,7 +1,6 @@
 """Contains code relating to the Google Cloud Platform Datastore service."""
 
 import gzip
-import json
 import os
 from datetime import date, datetime, timedelta
 
@@ -98,11 +97,10 @@ class GoogleNBD:
         if ENV_GCP_CREDENTIALS.endswith(FILE_TYPE_JSON):
             self.client = Client()
         else:
-            credentials = service_account.Credentials.from_service_account_info(
-                json.loads(ENV_GCP_CREDENTIALS)
-            )
             self.client = Client(
-                credentials=credentials,
+                credentials=service_account.Credentials.from_service_account_info(
+                    ENV_GCP_CREDENTIALS
+                ),
             )
 
     @staticmethod
