@@ -1,0 +1,10 @@
+runtime: python311
+instance_class: F2
+entrypoint: gunicorn --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind :$PORT incident_reporting.main:app
+
+env_variables:
+  GCP_DEPLOY: True
+
+handlers:
+- url: /.*
+  script: auto
