@@ -21,6 +21,7 @@ jobs:
       with:
         deliverables: app.yaml
         version: v1
+        service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
     - name: Test
       run: curl "${{ steps.deploy.outputs.url }}/status"
