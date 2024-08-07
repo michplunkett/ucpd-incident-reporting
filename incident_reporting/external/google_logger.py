@@ -1,5 +1,6 @@
 """Initialize and set the logging defaults."""
 
+import json
 import logging
 import sys
 
@@ -18,11 +19,10 @@ def init_logger():
     if ENV_GCP_CREDENTIALS.endswith(FILE_TYPE_JSON) or ENV_GCP_DEPLOY:
         logging_client = gcp_logging.Client()
     else:
-        logging_client = gcp_logging.Client(
-            credentials=service_account.Credentials.from_service_account_info(
-                ENV_GCP_CREDENTIALS
-            )
+        credentials = service_account.Credentials.from_service_account_info(
+            json.loads(ENV_GCP_CREDENTIALS)
         )
+        logging_client = gcp_logging.Client(credentials=credentials)
 
     logging_client.setup_logging(log_level=logging.INFO)
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
