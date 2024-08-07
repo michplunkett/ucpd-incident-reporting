@@ -53,6 +53,7 @@ app.add_middleware(
         "http://0.0.0.0:8000",
         "https://0.0.0.0:8000",
         "https://ucpd-incident-reporter-7cfdc3369124.herokuapp.com/",
+        "https://total-thinker-381819.uc.r.appspot.com/",
     ],
     allow_credentials=True,
     allow_methods=[HTTPMethod.GET],
@@ -69,7 +70,8 @@ def home(request: Request) -> Response:
 
 
 @app.get("/status")
-def status(request: Request) -> JSONResponse:
+def status() -> JSONResponse:
+    logging.debug("Successful status check.")
     return JSONResponse(status_code=HTTPStatus.OK, content="Everything is 💯")
 
 
