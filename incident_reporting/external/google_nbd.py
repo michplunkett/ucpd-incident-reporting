@@ -11,6 +11,7 @@ from google.oauth2 import service_account
 
 from incident_reporting.utils.constants import (
     ENV_GCP_CREDENTIALS,
+    ENV_GCP_DEPLOY,
     FILE_OPEN_MODE_READ,
     FILE_TYPE_JSON,
     KEY_REPORTED,
@@ -94,7 +95,7 @@ class GoogleNBD:
     ENTITY_TYPE = "Incident"
 
     def __init__(self):
-        if ENV_GCP_CREDENTIALS.endswith(FILE_TYPE_JSON):
+        if ENV_GCP_CREDENTIALS.endswith(FILE_TYPE_JSON) or ENV_GCP_DEPLOY:
             self.client = Client()
         else:
             self.client = Client(

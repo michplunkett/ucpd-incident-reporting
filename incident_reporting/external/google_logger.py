@@ -8,13 +8,14 @@ from google.oauth2 import service_account
 
 from incident_reporting.utils.constants import (
     ENV_GCP_CREDENTIALS,
+    ENV_GCP_DEPLOY,
     FILE_TYPE_JSON,
 )
 
 
 def init_logger():
     """Set logger defaults."""
-    if ENV_GCP_CREDENTIALS.endswith(FILE_TYPE_JSON):
+    if ENV_GCP_CREDENTIALS.endswith(FILE_TYPE_JSON) or ENV_GCP_DEPLOY:
         logging_client = gcp_logging.Client()
     else:
         logging_client = gcp_logging.Client(
