@@ -12,7 +12,7 @@ from google.oauth2 import service_account
 
 from incident_reporting.utils.constants import (
     ENV_GCP_CREDENTIALS,
-    ENV_GCP_PROJECT_ID,
+    ENV_GCP_DEPLOY,
     FILE_OPEN_MODE_READ,
     FILE_TYPE_JSON,
     KEY_REPORTED,
@@ -96,16 +96,13 @@ class GoogleNBD:
     ENTITY_TYPE = "Incident"
 
     def __init__(self):
-        if ENV_GCP_CREDENTIALS.endswith(FILE_TYPE_JSON):
-            self.client = Client(ENV_GCP_PROJECT_ID)
+        if ENV_GCP_CREDENTIALS.endswith(FILE_TYPE_JSON) or ENV_GCP_DEPLOY:
+            self.client = Client()
         else:
             credentials = service_account.Credentials.from_service_account_info(
                 json.loads(ENV_GCP_CREDENTIALS)
             )
-            self.client = Client(
-                credentials=credentials,
-                project=ENV_GCP_PROJECT_ID,
-            )
+            self.client = Client(credentials=credentials)
 
     @staticmethod
     def _list_to_parsed_list(unparsed_list: [str]) -> [str]:

@@ -13,7 +13,7 @@ UTC_DATE_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S%z"
 
 # Environment Constants
 ENV_GCP_CREDENTIALS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "")
-ENV_GCP_PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT")
+ENV_GCP_DEPLOY = os.getenv("GCP_DEPLOY", False)
 
 # File Constants
 FILE_ENCODING_UTF_8 = "utf-8"

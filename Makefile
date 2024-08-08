@@ -10,4 +10,8 @@ lint:
 
 .PHONY: run
 run:
-	uvicorn incident_reporting.main:app --reload --host 0.0.0.0 --port 8000
+	gunicorn incident_reporting.main:app --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --reload
+
+.PHONY: deploy
+deploy:
+	gcloud app deploy app.yaml
