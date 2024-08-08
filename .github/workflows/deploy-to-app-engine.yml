@@ -11,17 +11,22 @@ jobs:
     name: Deploying to Google Cloud
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Authenticate on GCP
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-    - name: Deploy to App Engine
-      id: deploy
-      uses: google-github-actions/deploy-appengine@v0.2.0
-      with:
-        deliverables: app.yaml
-        version: v1
-        service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+      - name: Deploy to App Engine
+        id: deploy
+        uses: 'google-github-actions/deploy-appengine@v2'
 
-    - name: Test
-      run: curl "${{ steps.deploy.outputs.url }}/status"
+      # Example of using the output
+      - name: Testing Status Endpoint
+        id: test
+        run: 'curl "${{ steps.deploy.outputs.version_url }}/status"'
