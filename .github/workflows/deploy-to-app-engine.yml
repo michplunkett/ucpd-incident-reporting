@@ -16,6 +16,9 @@ jobs:
       id-token: 'write'
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Authenticate on GCP
         id: auth
         uses: google-github-actions/auth@v2
