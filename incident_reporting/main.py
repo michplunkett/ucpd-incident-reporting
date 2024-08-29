@@ -23,6 +23,7 @@ from incident_reporting.utils.constants import (
     KEY_REPORTED_DATE,
     KEY_TYPE,
     KEY_VALIDATED_ADDRESS,
+    TABLE_DATE_TIME_FORMAT,
     TYPE_INFORMATION,
     UCPD_DATE_FORMAT,
     UCPD_MDY_DATE_FORMAT,
@@ -210,7 +211,7 @@ def get_yearly_incidents() -> JSONResponse:
     df_dict = df.to_dicts()
     for idx in range(len(df_dict)):
         df_dict[idx][KEY_REPORTED] = df_dict[idx][KEY_REPORTED].strftime(
-            UCPD_DATE_FORMAT
+            TABLE_DATE_TIME_FORMAT
         )
 
     return JSONResponse(content={"incidents": json.dumps(df_dict, default=str)})

@@ -5,6 +5,7 @@ import os
 LOGGING_FORMAT = "%(levelname)s:\t%(message)s"
 
 # Date/Time Constants
+TABLE_DATE_TIME_FORMAT = "%Y/%m/%d %H:%M"
 TIMEZONE_CHICAGO = "America/Chicago"
 UCPD_DATE_FORMAT = "%m/%d/%y %I:%M %p"
 UCPD_MDY_DATE_FORMAT = "%m/%d/%Y"
