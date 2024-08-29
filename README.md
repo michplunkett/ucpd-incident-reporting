@@ -2,6 +2,7 @@
 This application makes use of scraped incidents from the UCPD Daily Incident Reports and displays them in a handful of ways.
 
 ## Article(s) Citing this Project
+- UChicago Police Department Incident Reporter: [Link](https://chicagomaroon.com/uchicago-police-department-incident-reporter/)
 - The Maroon Launches UChicago Police Department Incident Reporter: [Link](https://chicagomaroon.com/41255/grey-city/the-maroon-launches-uchicago-police-department-incident-reporter/)
 
 ## Project Requirements
