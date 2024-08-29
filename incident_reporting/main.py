@@ -23,6 +23,7 @@ from incident_reporting.utils.constants import (
     KEY_REPORTED_DATE,
     KEY_TYPE,
     KEY_VALIDATED_ADDRESS,
+    TABLE_DATE_TIME_FORMAT,
     TYPE_INFORMATION,
     UCPD_DATE_FORMAT,
     UCPD_MDY_DATE_FORMAT,
@@ -52,7 +53,6 @@ app.add_middleware(
     allow_origins=[
         "http://0.0.0.0:8000",
         "https://0.0.0.0:8000",
-        "https://ucpd-incident-reporter-7cfdc3369124.herokuapp.com/",
         "https://total-thinker-381819.uc.r.appspot.com/",
     ],
     allow_credentials=True,
@@ -69,7 +69,7 @@ def home(request: Request) -> Response:
     return templates.TemplateResponse("home.html", {"request": request})
 
 
-@app.get("/status")
+@app.get("/status", response_class=JSONResponse, status_code=HTTPStatus.OK)
 def status() -> JSONResponse:
     logging.debug("Successful status check.")
     return JSONResponse(status_code=HTTPStatus.OK, content="Everything is 💯")
@@ -211,7 +211,7 @@ def get_yearly_incidents() -> JSONResponse:
     df_dict = df.to_dicts()
     for idx in range(len(df_dict)):
         df_dict[idx][KEY_REPORTED] = df_dict[idx][KEY_REPORTED].strftime(
-            UCPD_DATE_FORMAT
+            TABLE_DATE_TIME_FORMAT
         )
 
     return JSONResponse(content={"incidents": json.dumps(df_dict, default=str)})
