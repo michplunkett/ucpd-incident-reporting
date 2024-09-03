@@ -201,7 +201,7 @@ def yearly_summation(request: Request) -> Response:
 
 
 @app.get(
-    "/incidents/yearly/",
+    "/incidents/yearly",
     response_class=JSONResponse,
     status_code=HTTPStatus.OK,
 )
