@@ -54,7 +54,7 @@ app.add_middleware(
         "http://0.0.0.0:8000",
         "https://0.0.0.0:8000",
         "https://total-thinker-381819.uc.r.appspot.com/",
-        "https://ucpd-incident-reporter.michplunkett.com/"
+        "https://ucpd-incident-reporter.michplunkett.com/",
     ],
     allow_credentials=True,
     allow_methods=[HTTPMethod.GET],
