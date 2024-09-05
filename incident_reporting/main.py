@@ -72,7 +72,7 @@ def log_page_visit(page: str, request: Request) -> None:
         # If the X-Forwarded-For header is not available, fall back to request.client
         client_ip = request.client.host
 
-    logging.info(f"{page} from this IP address: {client_ip}")
+    logging.info(f"{page} requested from this IP address: {client_ip}")
 
 
 @app.get("/", response_class=HTMLResponse, status_code=HTTPStatus.OK)
