@@ -62,11 +62,22 @@ app.add_middleware(
 )
 
 
+def log_page_visit(page: str, request: Request) -> None:
+    forwarded_for = request.headers.get("X-Forwarded-For")
+
+    if forwarded_for:
+        # X-Forwarded-For may contain multiple IPs, the first one is the client's IP
+        client_ip = forwarded_for.split(",")[0]
+    else:
+        # If the X-Forwarded-For header is not available, fall back to request.client
+        client_ip = request.client.host
+
+    logging.info(f"{page} from this IP address: {client_ip}")
+
+
 @app.get("/", response_class=HTMLResponse, status_code=HTTPStatus.OK)
 def home(request: Request) -> Response:
-    logging.info(
-        f"Home page requested from this IP address: {request.client.host}"
-    )
+    log_page_visit("Home page", request)
     return templates.TemplateResponse("home.html", {"request": request})
 
 
@@ -94,9 +105,7 @@ def thirty_day_map(request: Request) -> Response:
     "/incidents/map", response_class=JSONResponse, status_code=HTTPStatus.OK
 )
 def get_map_incidents(request: Request) -> JSONResponse:
-    logging.info(
-        f"Incident map requested from this IP address: {request.client.host}"
-    )
+    log_page_visit("Incident map", request)
     df, _ = client.get_last_30_days_of_incidents(True)
 
     # Remove any incidents without valid addresses
@@ -119,9 +128,7 @@ def get_map_incidents(request: Request) -> JSONResponse:
     "/hourly_summation", response_class=HTMLResponse, status_code=HTTPStatus.OK
 )
 def hourly_summation(request: Request) -> Response:
-    logging.info(
-        f"Hourly summation requested from this IP address: {request.client.host}"
-    )
+    log_page_visit("Hourly summation", request)
     return templates.TemplateResponse(
         "hourly_summation.html", {"request": request}
     )
@@ -183,9 +190,7 @@ def get_hourly_incidents() -> JSONResponse:
     "/yearly_table", response_class=HTMLResponse, status_code=HTTPStatus.OK
 )
 def yearly_table(request: Request) -> Response:
-    logging.info(
-        f"Yearly table requested from this IP address: {request.client.host}"
-    )
+    log_page_visit("Yearly table", request)
     return templates.TemplateResponse("yearly_table.html", {"request": request})
 
 
@@ -193,9 +198,7 @@ def yearly_table(request: Request) -> Response:
     "/yearly_summation", response_class=HTMLResponse, status_code=HTTPStatus.OK
 )
 def yearly_summation(request: Request) -> Response:
-    logging.info(
-        f"Yearly summation requested from this IP address: {request.client.host}"
-    )
+    log_page_visit("Yearly summation", request)
     return templates.TemplateResponse(
         "yearly_summation.html", {"request": request}
     )
@@ -259,9 +262,7 @@ def get_yearly_incident_counts() -> JSONResponse:
     status_code=HTTPStatus.OK,
 )
 def get_all_incidents_as_file(request: Request) -> StreamingResponse:
-    logging.info(
-        f"All incidents CSV requested from this IP address: {request.client.host}"
-    )
+    log_page_visit("All incidents CSV", request)
     df, _ = client.get_last_year_of_incidents()
     df_pandas = df.to_pandas()
     today = date.today().strftime("%m-%d-%Y")
