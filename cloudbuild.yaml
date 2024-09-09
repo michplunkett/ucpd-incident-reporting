@@ -1,0 +1,22 @@
+steps:
+  - name: 'python:3.11'  # Specify the Python version you are using
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        python -m venv /workspace/venv
+        source /workspace/venv/bin/activate
+        pip install --upgrade pip
+        pip install -r requirements.txt
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['app', 'deploy', '--quiet']
+
+# Optionally specify any build artifacts
+artifacts:
+  objects:
+    location: 'gs://$PROJECT_ID-build-artifacts/$BUILD_ID/'
+    paths: ['**/*']
+
+# Set the build timeout (e.g., 10 minutes)
+timeout: '900s'
