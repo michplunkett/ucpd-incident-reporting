@@ -1,20 +1,18 @@
 steps:
-  - name: 'python:3.11'
+  - name: 'gcr.io/cloud-builders/git'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        python -m venv /workspace/venv
-        source /workspace/venv/bin/activate
-        pip install --upgrade pip
-        pip install -r requirements.txt
+        git clone https://github.com/michplunkett/ucpd-incident-reporting.git /workspace
+        cd /workspace
+        git checkout main
 
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy', '--quiet']
 
-artifacts:
-  objects:
-    location: 'gs://$PROJECT_ID-build-artifacts/$BUILD_ID/'
-    paths: ['**/*']
+substitutions:
+  _REGION: " us-central"
+  _PROJECT_ID: "total-thinker-381819"
 
-timeout: '900s'
+timeout: '1200s'
