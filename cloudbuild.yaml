@@ -1,5 +1,5 @@
 steps:
-  - name: 'python:3.11'  # Specify the Python version you are using
+  - name: 'python:3.11'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -12,11 +12,9 @@ steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy', '--quiet']
 
-# Optionally specify any build artifacts
 artifacts:
   objects:
     location: 'gs://$PROJECT_ID-build-artifacts/$BUILD_ID/'
     paths: ['**/*']
 
-# Set the build timeout (e.g., 10 minutes)
 timeout: '900s'
