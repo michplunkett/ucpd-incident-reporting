@@ -11,8 +11,4 @@ steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy', '--quiet']
 
-substitutions:
-  _REGION: " us-central"
-  _PROJECT_ID: "total-thinker-381819"
-
 timeout: '1200s'
