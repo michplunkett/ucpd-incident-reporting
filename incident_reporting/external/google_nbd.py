@@ -177,12 +177,12 @@ class GoogleNBD:
         stored_df = self._get_stored_incidents()
 
         with self.client.context():
+            stored_df = stored_df.filter(
+                pl.col(KEY_REPORTED_DATE) >= date_limit
+            )
+
             # Check if the data frame has any rows.
             if stored_df.shape[0]:
-                stored_df = stored_df.filter(
-                    pl.col(KEY_REPORTED_DATE) >= date_limit
-                )
-
                 query = (
                     Incident.query(
                         Incident.reported_date
