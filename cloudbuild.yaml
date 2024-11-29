@@ -1,0 +1,14 @@
+steps:
+  - name: 'gcr.io/cloud-builders/git'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        git clone https://github.com/michplunkett/ucpd-incident-reporting.git /workspace
+        cd /workspace
+        git checkout main
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['app', 'deploy', '--quiet']
+
+timeout: '1200s'
