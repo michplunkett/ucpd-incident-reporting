@@ -16,11 +16,12 @@ This application makes use of scraped incidents from the UCPD Daily Incident Rep
 2. Use the `make run` command.
 
 ## Technical Notes
-- Any modules should be added via the `poetry add [module]` command.
-  - Example: `poetry add black`
+- Any modules should be added via the `uv add [module]` command.
+  - Example: `uv add pre-commit`
 
 ## Standard Commands
 - `make`: Runs `create-requirements` and `lint`, respectively.
 - `make create-requirements`: Runs the `Poetry` command that creates an up-to-date `requirements.txt` file.
+- `make env`: Creates or activates a `uv` virtual environment.
 - `make lint`: Runs `pre-commit` and creates the `requirements.txt` file.
 - `make run`: Starts the `FastAPI` application.
