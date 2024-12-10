@@ -14,7 +14,7 @@ create-requirements:
 
 .PHONY: run
 run:
-	uv gunicorn incident_reporting.main:app --worker-class uvicorn.workers.UvicornWorker --reload
+	uv run gunicorn incident_reporting.main:app --worker-class uvicorn.workers.UvicornWorker --reload
 
 .PHONY: deploy
 deploy:
