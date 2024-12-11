@@ -665,15 +665,15 @@ wheels = [
 
 [[package]]
 name = "polars"
-version = "1.17.1"
+version = "0.20.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/32/3b/40b42c6b0e54b001fbaaa55d3d769283e0d54541be783783e08da6a9c54a/polars-1.17.1.tar.gz", hash = "sha256:5a3dac3cb7cbe174d1fa898cba9afbede0c08e8728feeeab515554d762127019", size = 4220337 }
+sdist = { url = "https://files.pythonhosted.org/packages/56/1a/c35bd30d25375c298acb1ffa519f8727defa8e743596640394ce89aba82a/polars-0.20.0.tar.gz", hash = "sha256:cc70f7e4f195b438de54f51d411fa831d032d8528fc01fea186c8784f06d0f04", size = 2993820 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5b/24/a7d97fb8988a3ccf9e285311fe9b04e8cec95657fc2b9f9a8ebedbcdd06f/polars-1.17.1-cp39-abi3-macosx_10_12_x86_64.whl", hash = "sha256:d3a2172f7cf332010f0b034345111e9c86d59b5a5b0fc5aa0509121f40d9e43c", size = 32993574 },
-    { url = "https://files.pythonhosted.org/packages/84/4f/b892993474850e85ac05ffa6d0f312c207dcbb1e4a55dc6383f826d5a87d/polars-1.17.1-cp39-abi3-macosx_11_0_arm64.whl", hash = "sha256:82e98c69197df0d8ddc341a6175008508ceaea88f723f32044027810bcdb43fa", size = 28773084 },
-    { url = "https://files.pythonhosted.org/packages/29/08/54fe197c9d5f951cf85944ff9cfe0a706dc9d2230e98814a125eda8a1d09/polars-1.17.1-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:59abdab015ed2ecfa0c63862b960816c35096e1f4df057dde3c44cd973af5029", size = 36360758 },
-    { url = "https://files.pythonhosted.org/packages/9b/0c/f5a100da6184f11838520a423a5830dabe194a0812c9fdbef419f2276a92/polars-1.17.1-cp39-abi3-manylinux_2_24_aarch64.whl", hash = "sha256:6d2f922c403b8900b3ae3c23a27b2cae3a2db40ad790cc4fc368402b92629b11", size = 32685903 },
-    { url = "https://files.pythonhosted.org/packages/4b/59/cf2e88bebdffb7efb7e4f65f4ec9e293040c313d37e3628db87e4f64dca4/polars-1.17.1-cp39-abi3-win_amd64.whl", hash = "sha256:d38156c8259554cbcb17874d91e6dfa9c404335f08a3307496aadfdee46baa31", size = 35931768 },
+    { url = "https://files.pythonhosted.org/packages/a9/8f/cc33fc35e988b210e0884d846c0f3d79ff374af5610f98ad454a0383e8ab/polars-0.20.0-cp38-abi3-macosx_10_12_x86_64.whl", hash = "sha256:813707e28bdbdf00a849a72d856cad48a4063a1e7f4487bc7068f957988107ce", size = 26385265 },
+    { url = "https://files.pythonhosted.org/packages/e3/9b/d001513d404adb9c07ded33ba6ffed1b881ee0fd0f9bdb08855cdab8bc4b/polars-0.20.0-cp38-abi3-macosx_11_0_arm64.whl", hash = "sha256:7504c63e9783de6cec289f89383b797a5e1fd72c10abc137bba7ee022d34f193", size = 24040754 },
+    { url = "https://files.pythonhosted.org/packages/aa/a2/5e40a11229f611e8f4ce2e2906e1c8a43fc685248ecb39b39b2707f917ad/polars-0.20.0-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e01beb3e3ad2c3efff209fafd5eff785489d1a6fb196aee2e29237d969389255", size = 28416865 },
+    { url = "https://files.pythonhosted.org/packages/d3/36/7cb80b67a6217032c88fe8874498c59c604785d65a004a44bedfc1c77377/polars-0.20.0-cp38-abi3-manylinux_2_24_aarch64.whl", hash = "sha256:1d78313386fb46ab516eebb521c8612a9acb86c9972af195e771f468c0e5e77d", size = 26195813 },
+    { url = "https://files.pythonhosted.org/packages/57/14/448b3def0e6f7cae23d1889dcc88a34b955eda017ee368e325e68cc5b2a3/polars-0.20.0-cp38-abi3-win_amd64.whl", hash = "sha256:8b8856c7368b605b77e9cf231340ab39a4af86a1dafddde92a2b913c0c47007e", size = 24686351 },
 ]
 
 [[package]]
@@ -1029,7 +1029,7 @@ requires-dist = [
     { name = "gunicorn", specifier = ">=23.0.0" },
     { name = "jinja2", specifier = ">=3.1.4" },
     { name = "pandas", specifier = ">=2.2.3" },
-    { name = "polars", specifier = ">=1.17.1" },
+    { name = "polars", specifier = "==0.20.0" },
     { name = "pre-commit", specifier = ">=4.0.1" },
     { name = "pyarrow", specifier = ">=18.1.0" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.32.1" },
