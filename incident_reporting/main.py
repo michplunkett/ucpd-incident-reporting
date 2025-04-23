@@ -52,6 +52,7 @@ app.add_middleware(
     allow_origins=[
         "http://0.0.0.0:8000",
         "http://127.0.0.1:8000",
+        "https://total-thinker-381819.uc.r.appspot.com/",
         "https://ucpd-incident-reporter.michplunkett.com/",
     ],
     allow_credentials=True,
