@@ -1,12 +1,12 @@
-default: create-requirements lint
+.DEFAULT_GOAL := lint
 
 .PHONY: env
 env:
 	uv venv
 
 .PHONY: lint
-lint:
-	uv run pre-commit run --all-files
+lint: create-requirements
+	pre-commit run --all-files
 
 .PHONY: create-requirements
 create-requirements:
@@ -14,7 +14,7 @@ create-requirements:
 
 .PHONY: run
 run:
-	uv run gunicorn incident_reporting.main:app --worker-class uvicorn.workers.UvicornWorker --reload
+	gunicorn incident_reporting.main:app --worker-class uvicorn.workers.UvicornWorker --reload
 
 .PHONY: deploy
 deploy:
