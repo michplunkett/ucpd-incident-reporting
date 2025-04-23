@@ -1,5 +1,4 @@
 import json
-import logging
 from datetime import date
 from http import HTTPMethod, HTTPStatus
 from pathlib import Path
@@ -34,7 +33,7 @@ from incident_reporting.utils.season_functions import (
 )
 
 
-init_logger()
+logger = init_logger()
 
 app = FastAPI(debug=True)
 base_dir = Path(__file__).resolve().parent
@@ -72,7 +71,7 @@ def log_page_visit(page: str, request: Request) -> None:
         # If the X-Forwarded-For header is not available, fall back to request.client
         client_ip = request.client.host
 
-    logging.info(f"{page} requested from this IP address: {client_ip}")
+    logger.info(f"{page} requested from this IP address: {client_ip}")
 
 
 @app.get("/", response_class=HTMLResponse, status_code=HTTPStatus.OK)
@@ -83,7 +82,7 @@ def home(request: Request) -> Response:
 
 @app.get("/status", response_class=JSONResponse, status_code=HTTPStatus.OK)
 def status() -> JSONResponse:
-    logging.debug("Successful status check.")
+    logger.debug("Successful status check.")
     return JSONResponse(status_code=HTTPStatus.OK, content="Everything is 💯")
 
 
