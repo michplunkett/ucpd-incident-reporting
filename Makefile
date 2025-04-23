@@ -4,6 +4,10 @@
 env:
 	uv venv
 
+.PHONY: install
+install:
+	uv pip install -r pyproject.toml
+
 .PHONY: lint
 lint: create-requirements
 	pre-commit run --all-files
