@@ -51,8 +51,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://0.0.0.0:8000",
-        "https://0.0.0.0:8000",
-        "https://total-thinker-381819.uc.r.appspot.com/",
+        "http://127.0.0.1:8000",
         "https://ucpd-incident-reporter.michplunkett.com/",
     ],
     allow_credentials=True,
