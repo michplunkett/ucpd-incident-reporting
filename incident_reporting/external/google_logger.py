@@ -4,25 +4,28 @@ import json
 import logging
 import sys
 
-import google.cloud.logging as gcp_logging
+from google.cloud.logging_v2.handlers import StructuredLogHandler
 from google.oauth2 import service_account
 
 from incident_reporting.utils.constants import (
     ENV_GCP_CREDENTIALS,
-    ENV_GCP_DEPLOY,
     FILE_TYPE_JSON,
 )
 
 
 def init_logger():
     """Set logger defaults."""
-    if ENV_GCP_CREDENTIALS.endswith(FILE_TYPE_JSON) or ENV_GCP_DEPLOY:
-        logging_client = gcp_logging.Client()
-    else:
-        credentials = service_account.Credentials.from_service_account_info(
+    if not ENV_GCP_CREDENTIALS.endswith(FILE_TYPE_JSON):
+        service_account.Credentials.from_service_account_info(
             json.loads(ENV_GCP_CREDENTIALS)
         )
-        logging_client = gcp_logging.Client(credentials=credentials)
 
-    logging_client.setup_logging(log_level=logging.INFO)
-    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
+    logger = logging.getLogger("ucpd-incident-scraper")
+    logger.setLevel(logging.INFO)
+
+    if not logger.handlers:
+        handler = StructuredLogHandler(stream=sys.stdout)
+        logger.addHandler(handler)
+        logger.propagate = False
+
+    return logger
