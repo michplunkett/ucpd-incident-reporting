@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import date
 from http import HTTPMethod, HTTPStatus
 from pathlib import Path
@@ -33,7 +34,7 @@ from incident_reporting.utils.season_functions import (
 )
 
 
-logger = init_logger()
+init_logger()
 
 app = FastAPI(debug=True)
 base_dir = Path(__file__).resolve().parent
@@ -51,7 +52,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://0.0.0.0:8000",
-        "http://127.0.0.1:8000",
+        "https://0.0.0.0:8000",
         "https://total-thinker-381819.uc.r.appspot.com/",
         "https://ucpd-incident-reporter.michplunkett.com/",
     ],
@@ -71,7 +72,7 @@ def log_page_visit(page: str, request: Request) -> None:
         # If the X-Forwarded-For header is not available, fall back to request.client
         client_ip = request.client.host
 
-    logger.info(f"{page} requested from this IP address: {client_ip}")
+    logging.info(f"{page} requested from this IP address: {client_ip}")
 
 
 @app.get("/", response_class=HTMLResponse, status_code=HTTPStatus.OK)
@@ -82,7 +83,7 @@ def home(request: Request) -> Response:
 
 @app.get("/status", response_class=JSONResponse, status_code=HTTPStatus.OK)
 def status() -> JSONResponse:
-    logger.debug("Successful status check.")
+    logging.debug("Successful status check.")
     return JSONResponse(status_code=HTTPStatus.OK, content="Everything is 💯")
 
 

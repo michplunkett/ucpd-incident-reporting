@@ -1,16 +1,12 @@
-.DEFAULT_GOAL := lint
+default: create-requirements lint
 
 .PHONY: env
 env:
 	uv venv
 
-.PHONY: install
-install:
-	uv pip install -r pyproject.toml
-
 .PHONY: lint
-lint: create-requirements
-	pre-commit run --all-files
+lint:
+	uv run pre-commit run --all-files
 
 .PHONY: create-requirements
 create-requirements:
@@ -18,7 +14,7 @@ create-requirements:
 
 .PHONY: run
 run:
-	gunicorn incident_reporting.main:app --worker-class uvicorn.workers.UvicornWorker --reload
+	uv run gunicorn incident_reporting.main:app --worker-class uvicorn.workers.UvicornWorker --reload
 
 .PHONY: deploy
 deploy:
