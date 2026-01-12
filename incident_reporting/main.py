@@ -33,7 +33,6 @@ from incident_reporting.utils.season_functions import (
     create_seasonal_incident_totals,
 )
 
-
 init_logger()
 
 app = FastAPI(debug=True)

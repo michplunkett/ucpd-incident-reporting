@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: name-tests-test
@@ -16,9 +16,6 @@ repos:
       - id: check-symlinks
       - id: mixed-line-ending
       - id: sort-simple-yaml
-      - id: fix-encoding-pragma
-        args:
-          - --remove
       - id: pretty-format-json
         args:
           - --autofix
@@ -31,27 +28,15 @@ repos:
       - id: python-no-eval
       - id: python-no-log-warn
 
-  - repo: https://github.com/PyCQA/isort
-    rev: 6.0.1
-    hooks:
-      - id: isort
-        name: Run isort to sort imports
-        files: \.py$
-        exclude: ^build/.*$|^.tox/.*$|^venv/.*$
-        args:
-          - --lines-after-imports=2
-          - --profile=black
-          - --line-length=80
-
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.7
+    rev: v0.14.11
     hooks:
       - id: ruff
         types_or: [python,pyi]
         args:
           - --fix
           - --target-version=py311
-          - --select=B,C,E,F,W
+          - --select=B,C,E,F,W,I
           - --line-length=80
           - --ignore=E203,E402,E501,E261
       - id: ruff-format
@@ -90,6 +75,6 @@ repos:
           - --no-config
 
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.25.1
+    rev: v10.0.0-rc.0
     hooks:
       - id: eslint
