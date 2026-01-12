@@ -1,6 +1,5 @@
 import os
 
-
 # Application Constants
 LOGGING_FORMAT = "%(levelname)s:\t%(message)s"
 

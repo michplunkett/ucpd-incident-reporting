@@ -25,7 +25,6 @@ from incident_reporting.utils.constants import (
     UTC_DATE_TIME_FORMAT,
 )
 
-
 # Incidents of these types have been excluded from the list for the sake of
 # victim's privacy and due to the nature the incidents included in this list.
 EXCLUDED_INCIDENT_TYPES = [
