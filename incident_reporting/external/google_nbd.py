@@ -168,7 +168,7 @@ class GoogleNBD:
         return False
 
     def _get_incidents_back_x_days(
-        self, date_limit: date = None, exclude: bool = False
+        self, date_limit: date | None = None, exclude: bool = False
     ) -> pl.DataFrame:
         if not date_limit:
             date_limit = date(2000, 1, 1)
