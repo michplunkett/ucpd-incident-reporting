@@ -1,6 +1,6 @@
 let incidents = [];
-let infoWindow = undefined;
-let map = undefined;
+let infoWindow;
+let map;
 const mapStyles = [
   {
     featureType: "poi.attraction",
@@ -67,7 +67,7 @@ const mapStyles = [
     ],
   },
 ];
-let markers = [];
+const markers = [];
 
 async function getMapIncidents() {
   const response = await fetch("/incidents/map");
@@ -87,7 +87,7 @@ function createMap() {
     incidents = r["incidents"];
 
     incidents.forEach((incident) => {
-      let content = `
+      const content = `
             <div id="content">
               <p class="incident-title">${incident.incident}</p>
               <p class="incident-information"><b>Predicted Address:</b> ${incident.validated_address}</p>
@@ -98,7 +98,7 @@ function createMap() {
             </div>
         `;
 
-      let marker = new google.maps.Marker({
+      const marker = new google.maps.Marker({
         title: `${incident.incident} @ ${incident.occurred}`,
         position: new google.maps.LatLng(
           incident.validated_location[0],
