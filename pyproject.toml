@@ -7,7 +7,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "cachetools>=5.5.0",
-    "fastapi>=0.115.6",
+    "fastapi==0.129.0",
     "google-cloud-logging>=3.11.3",
     "google-cloud-ndb>=2.3.2",
     "gunicorn>=23.0.0",
