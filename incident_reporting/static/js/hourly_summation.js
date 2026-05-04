@@ -83,7 +83,7 @@ function createVisual() {
           enabled: false,
         },
         events: {
-          click: function (e) {
+          click: (e) => {
             if (e.point.drilldown) {
               chart.addSeriesAsDrilldown(
                 e.point,
