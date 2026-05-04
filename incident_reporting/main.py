@@ -83,7 +83,7 @@ def home(request: Request) -> Response:
 @app.get("/status", response_class=JSONResponse, status_code=HTTPStatus.OK)
 def status() -> JSONResponse:
     logging.debug("Successful status check.")
-    return JSONResponse(status_code=HTTPStatus.OK, content="Everything is 💯")
+    return JSONResponse(content="Everything is 💯")
 
 
 @app.get(
