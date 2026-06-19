@@ -70,3 +70,8 @@ repos:
     hooks:
       - id: biome-check
         files: "incident_reporting/static/js/.+"
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.12
+    hooks:
+      - id: actionlint
