@@ -244,7 +244,7 @@ def get_yearly_incident_counts() -> JSONResponse:
     type_counts_list = [
         (k, type_counts[k])
         for k in sorted(type_counts, key=type_counts.get, reverse=True)
-        if type_counts[k] > 20 and k != TYPE_INFORMATION
+        if type_counts[k] > 20 and k not in ["", TYPE_INFORMATION]
     ]
 
     return JSONResponse(
