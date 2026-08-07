@@ -6,7 +6,7 @@ env:
 
 .PHONY: install
 install:
-	uv pip install -r pyproject.toml
+	uv sync
 
 .PHONY: lint
 lint: create-requirements
